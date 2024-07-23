@@ -1,11 +1,8 @@
 Tutorials
 =========
 
-Beginner:
----------
+Beginner: First Tutorial
+------------------------
 
-First Tutorial
-~~~~~~~~~~~~~~
-
-Intermediate:
-=============
+Intermediate: Second Tutorial
+-----------------------------
