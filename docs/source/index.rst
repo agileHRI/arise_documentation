@@ -21,7 +21,8 @@ Contents
    :maxdepth: 1
    :hidden:
 
-   related_projects
+   getting-started
+   related-projects
    tutorials
    usage
    api
