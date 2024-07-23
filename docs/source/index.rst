@@ -19,7 +19,6 @@ Contents
 .. toctree::
    :titlesonly:
    :maxdepth: 1
-   :hidden:
 
    getting-started
    related-projects
