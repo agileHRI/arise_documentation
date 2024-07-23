@@ -18,12 +18,11 @@ Contents
 
 .. toctree::
    :titlesonly:
-   :maxdepth: 2
+   :maxdepth: 1
    :hidden:
 
    getting-started
-   tutorials
-   the-arise-framework-project
    related-projects
+   tutorials
    usage
    api
