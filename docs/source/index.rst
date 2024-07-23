@@ -21,8 +21,8 @@ Contents
    :maxdepth: 1
    :hidden:
 
+   
    getting-started
-   related-projects
    tutorials
-   usage
-   api
+   related-projects
+   the-arise-framework-project
