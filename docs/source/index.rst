@@ -18,6 +18,7 @@ Contents
 
 .. toctree::
 
+   related_projects
    tutorials
    usage
    api
