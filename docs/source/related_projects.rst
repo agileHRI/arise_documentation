@@ -1,8 +1,15 @@
 Related Projects
 ================
-Vulcanexus
-----------
+...
+
 FIWARE
 ------
+...
+
+Vulcanexus
+----------
+...
+
 ROS4HRI
 -------
+...
