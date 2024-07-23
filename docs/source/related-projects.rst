@@ -1,23 +1,12 @@
 Related Projects
 ================
+FIWARE, Vulcanexus, and ROS4HRI
 ...
 
-FIWARE
-------
-...
-
-Vulcanexus
-----------
-...
-
-ROS4HRI
--------
-...
-
-TEF Driven Projects
+TEF-Driven Projects
 -------------------
 ...
 
-Company Driven Projects
+Company-Driven Projects
 -----------------------
 ...
