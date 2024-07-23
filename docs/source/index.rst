@@ -20,8 +20,5 @@ Contents
    :titlesonly:
    :maxdepth: 1
    :hidden:
-   
-   getting-started
+
    tutorials
-   the-arise-framework-project
-   related-projects
