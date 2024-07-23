@@ -25,4 +25,3 @@ Contents
    getting-started
    tutorials
    related-projects
-   the-arise-framework-project
