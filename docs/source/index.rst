@@ -17,6 +17,9 @@ Contents
 --------
 
 .. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
 
    related_projects
    tutorials
