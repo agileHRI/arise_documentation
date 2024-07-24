@@ -9,7 +9,7 @@ how to :ref:`installation_requirements` the project.
 
 .. note::
 
-   This project is under active development.
+   This project is under active development and is supported by the European Commission via its <ARISE Project (Horizon Europe Program) https://arise-middleware.eu>
 
 Contents
 --------
