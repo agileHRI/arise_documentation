@@ -4,7 +4,7 @@ Welcome to the ARISE Framework documentation!
 The **ARISE Framework** is a collection of middleware tools and reusable skills for industrial robotics applications.
 The initiative emerged to combine the strengths FIWARE, Vulcanexus, and ROS4HRI technologies in a joint technology framework.
 
-Check out the :doc:`getting-started` section for further information, including an overall introduction to the framework and its :ref:`installation_requirements`.
+Check out the :doc:`getting-started` section for further information, including an :ref:`overall_introduction` along with its :ref:`installation_requirements`.
 
 .. note::
 
