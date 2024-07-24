@@ -5,7 +5,7 @@ The **ARISE Framework** is a collection of middleware tools and reusable skills 
 The initiative emerged to combine the strengths FIWARE, Vulcanexus, and ROS4HRI technologies in a joint technology framework.
 
 Check out the :doc:`getting-started` section for further information, including
-how to :ref:`installation` the project.
+how to :ref:`installation_requirements` the project.
 
 .. note::
 
