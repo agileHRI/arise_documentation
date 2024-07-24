@@ -3,6 +3,6 @@ Getting Started
 
 (Intro)
 
-.. _installation:
-Installation
-------------
+.. _installation_requirements:
+Installation Requirements
+-------------------------
