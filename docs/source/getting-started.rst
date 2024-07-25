@@ -1,9 +1,6 @@
 Getting Started
 ===============
 
-Getting Started
-===============
-
 .. _overall_introduction:
 Overall Introduction to the ARISE Framework
 -------------------------------------------
