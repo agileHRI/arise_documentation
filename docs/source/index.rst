@@ -18,8 +18,7 @@ Contents
    :maxdepth: 1
 
    getting-started
+   installation
    tutorials
    the-arise-framework-project
    related-projects
-   usage
-   api
