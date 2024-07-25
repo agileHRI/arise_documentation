@@ -9,6 +9,11 @@ development of collaborative robotics applications. It integrates core technolog
 offering an all-in-one middleware solution along with a portfolio of reusable robot skills, specifically tailored for 
 perform industrial tasks in collaborative robotics applications.
 
+
+.. _next_steps:
+Next Steps
+----------
+
 If you’re eager to dive in and get hands-on, we encourage you to: 
 
 * Install the ARISE framework,
