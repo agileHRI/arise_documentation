@@ -1,1 +1,17 @@
+/* custom.css */
+
+/* Change the color of the lower part of the sidebar */
+.wy-side-nav-search {
+    background-color: #4B0082; /* Dark purple */
+}
+
+/* Change the color of the navigation content (lower part of the sidebar) */
+.wy-side-nav-search ~ ul {
+    background-color: #FFA500; /* Orange */
+}
+
+/* Ensure the logo's background matches the sidebar */
+img.logo {
+    background-color: transparent;
+}
 
