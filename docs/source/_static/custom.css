@@ -10,6 +10,14 @@ img.logo {
     background-color: transparent;
 }
 
+/* Import the Exo 2 font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap');
+
+/* Apply the Exo 2 font to all text */
+body, h1, h2, h3, h4, h5, h6, p, span, li, td, th, a {
+    font-family: 'Exo 2', sans-serif;
+}
+
 /* Change the color of header fonts to dark purple */
 h1, h2, h3, h4, h5, h6 {
     color: #502878; /* ARISE purple */
