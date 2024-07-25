@@ -2,8 +2,8 @@ Installation
 ============
 
 .. _installation_requirements:
-Installation Requirements
--------------------------
+Step 0: Installation Requirements
+---------------------------------
 ...
 
 Step 1
