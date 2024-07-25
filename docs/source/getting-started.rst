@@ -7,19 +7,19 @@ Getting Started
 .. _overall_introduction:
 Overall Introduction to the ARISE Framework
 -------------------------------------------
-Add here a brief introduction to the ARISE Framework. Current focus is on Technical aspects, 
-Key Questions and Takeaway Messages gravitate around the concepts:
+The ARISE framework is an open-source software stack designed to accelerate the agile and cost-effective
+development of collaborative robotics applications. It integrates core technologies like Vulcanexus, FIWARE, and ROS4HRI, 
+offering an all-in-one middleware solution along with a portfolio of reusable robot skills, specifically tailored for 
+perform industrial tasks in collaborative robotics applications.
 
-- All-in-one middleware
+If you’re eager to dive in and get hands-on, we encourage you to: 
 
-- Reusable Robotics Application Skills
+* Install the ARISE framework,
+* Run the Hello World example
+* Explore the simple demos in our basic Getting Started Playground.
 
-Main objectives for this section are: 
+If you prefer to delve deeper into the ARISE framework foundations, we suggest reviewing at least the following essential concepts:
 
-- Newcomers understand the value proposition
-
-- Motivate them to engage with the getting-started experience: Install the framework, run the Hello World, enjoy simple demos in a basic playground
-
-.. _installation_requirements:
-Installation Requirements
--------------------------
+* All-in-one Middleware
+* Reusable robot skills
+* ARISE TEFs (Testing and Experimentation Facilities)
