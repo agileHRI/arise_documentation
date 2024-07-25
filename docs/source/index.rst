@@ -20,5 +20,6 @@ Contents
    getting-started
    installation
    tutorials
+   how-to
    the-arise-framework-project
    related-projects
