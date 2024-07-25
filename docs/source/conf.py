@@ -39,7 +39,7 @@ html_logo = '_static/logo.png'
 html_theme_options = {
     'logo_only': True,
     'display_version': True,
-    'style_nav_header_background': '#4B0082',  # Dark purple
+    'style_nav_header_background': '#489e9a',  # ARISE Green
 }
 
 # Include the custom CSS file
