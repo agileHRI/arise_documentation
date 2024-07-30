@@ -2,10 +2,10 @@ The ARISE Framework Project
 ===========================
 ...
 
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
+.. mermaid::
+
+    graph TD
+        A[Start] --> B{Is it?}
+        B -->|Yes| C[OK]
+        B -->|No| D[Not OK]
+
