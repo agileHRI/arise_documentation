@@ -4,11 +4,13 @@ Getting Started
 .. _overall_introduction:
 Overall Introduction to the ARISE Framework
 -------------------------------------------
-The ARISE framework is an open-source software stack designed to accelerate the agile and cost-effective
-development of collaborative robotics applications. It integrates core technologies like Vulcanexus, FIWARE, and ROS4HRI, 
-offering an all-in-one middleware solution along with a portfolio of reusable robot skills, specifically tailored for 
-perform industrial tasks in collaborative robotics applications.
+The ARISE framework is an open-source software stack which targets the intersection between intelligent robotics, 
+middleware technologies, and IIoT applications. It is specially designed to accelerate the agile and cost-effective
+development of collaborative robotics applications. 
 
+ARISE combines three core technologies (Vulcanexus, FIWARE, and ROS4HRI) in an all-in-one middleware solution along with  
+collection of reusable robot skills and IIoT features which are specifically tailored to support human-robot collaboration 
+in industrial tasks.
 
 .. _next_steps:
 Next Steps
