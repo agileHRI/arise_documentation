@@ -22,7 +22,7 @@ If you’re eager to dive in and get hands-on, we encourage you to:
 * Run the Hello World example
 * Explore the basic demos available at our Getting Started Playground.
 
-If you prefer to delve deeper into the ARISE framework foundations, we suggest reviewing at least the following essential concepts:
+If you prefer to delve deeper into the ARISE framework design and its foundations, we suggest reviewing at least the following essential concepts:
 
 * All-in-one Middleware
 * Reusable robot skills
