@@ -20,7 +20,7 @@ If you’re eager to dive in and get hands-on, we encourage you to:
 
 * Install the ARISE framework,
 * Run the Hello World example
-* Explore the simple demos in our basic Getting Started Playground.
+* Explore the basic demos available at our Getting Started Playground.
 
 If you prefer to delve deeper into the ARISE framework foundations, we suggest reviewing at least the following essential concepts:
 
