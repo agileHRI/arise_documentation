@@ -50,8 +50,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Styling for specific admonition types (e.g., note, warning, etc.) */
 .admonition.note {
-    border-color: #2196F3; /* Blue border for 'note' */
-    background-color: #E3F2FD; /* Light blue background for 'note' */
+    background-color: #502878; /* ARISE purple */
+    /*background-color: #E3F2FD;*/ /* Light blue background for 'note' */
 }
 
 .admonition.warning {
