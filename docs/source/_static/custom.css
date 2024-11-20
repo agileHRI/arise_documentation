@@ -39,3 +39,12 @@ h1, h2, h3, h4, h5, h6 {
 .wy-menu {
     background-color: #502878; /* ARISE purple */
 }
+
+
+/* Customize the title of the admonition */
+.admonition .admonition-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #502878; /* Darker color for readability */
+    margin-bottom: 8px;
+}
