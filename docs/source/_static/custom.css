@@ -20,7 +20,7 @@ body, h1, h2, h3, h4, h5, h6, p, span, li, td, th, a {
 
 /* Change the color of header fonts to dark purple */
 h1, h2, h3, h4, h5, h6 {
-    color: #502878; /* ARISE purple */
+    color: #489e9a; /* ARISE Green */
 }
 /* Set the default link color */
 a {
