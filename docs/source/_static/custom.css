@@ -23,3 +23,11 @@ h1, h2, h3, h4, h5, h6 {
     color: #502878; /* ARISE purple */
 }
 
+/* Change the background color of the sidebar menu */
+.wy-side-nav-search {
+    background-color: #502878; /* ARISE purple */
+}
+
+.wy-menu {
+    background-color: #502878; /* ARISE purple */
+}
