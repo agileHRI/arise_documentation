@@ -41,10 +41,39 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+/* General styling for all admonitions */
+.admonition {
+    border: 2px solid #4CAF50; /* Green border */
+    background-color: #f9f9f9; /* Light grey background */
+    padding: 10px;
+    border-radius: 8px; /* Rounded corners */
+    margin-bottom: 20px;
+}
+
+/* Styling for specific admonition types (e.g., note, warning, etc.) */
+.admonition.note {
+    border-color: #2196F3; /* Blue border for 'note' */
+    background-color: #E3F2FD; /* Light blue background for 'note' */
+}
+
+.admonition.warning {
+    border-color: #FF9800; /* Orange border for 'warning' */
+    background-color: #FFF3E0; /* Light orange background for 'warning' */
+}
+
 /* Customize the title of the admonition */
 .admonition .admonition-title {
     font-weight: bold;
     font-size: 1.2em;
-    color: #502878; /* Darker color for readability */
+    color: #333; /* Darker color for readability */
     margin-bottom: 8px;
+}
+
+/* Specific title styling for certain admonition types */
+.admonition.note .admonition-title {
+    color: #1976D2; /* Blue title for 'note' */
+}
+
+.admonition.warning .admonition-title {
+    color: #E65100; /* Orange title for 'warning' */
 }
