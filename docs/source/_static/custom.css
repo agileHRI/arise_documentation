@@ -43,10 +43,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* General styling for all admonitions */
 .admonition {
-    border: 2px solid #4CAF50; /* Green border */
+    border: 2px solid #502878; /* ARISE purple */
     background-color: #f9f9f9; /* Light grey background */
     padding: 10px;
-    border-radius: 8px; /* Rounded corners */
+    border-radius: 4px; /* Rounded corners */
     margin-bottom: 20px;
 }
 
@@ -71,7 +71,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Specific title styling for certain admonition types */
 .admonition.note .admonition-title {
-    color: #1976D2; /* Blue title for 'note' */
+    color: #502878; /* ARISE purple */
 }
 
 .admonition.warning .admonition-title {
