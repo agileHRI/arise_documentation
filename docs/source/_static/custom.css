@@ -54,7 +54,7 @@ a {
 
 /* Styling for specific admonition types (e.g., note, warning, etc.) */
 .admonition.note {
-    background-color: #E8F5E9; /* Light green background for 'note' */
+    background-color: #D4EFEF; /* Light green background for 'note' */
 }
 
 .admonition.warning {
