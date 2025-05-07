@@ -1,5 +1,8 @@
 Welcome to the ARISE Framework! 
 ===============================
-[![Documentation Status](https://arise-framework-documentation.readthedocs.io/en/latest/)](https://arise-framework-documentation.readthedocs.io/en/latest/?badge=latest)
+.. image::https://arise-framework-documentation.readthedocs.io/en/latest/badge/?version=latest
+   :target: https://arise-framework-documentation.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 
 Write me!
