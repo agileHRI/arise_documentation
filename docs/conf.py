@@ -162,7 +162,10 @@ html_theme_options = {
         "color-brand-primary": "#489e9a",
         "color-brand-content": "#489e9a",
         "sidebar-item-spacing-vertical" : "5px"
-    }
+    },
+    "light_logo": "images/ARISE_logo.png",
+    "dark_logo": "images/ARISE_logo_dark_theme.png",
+    "sidebar_hide_name": True,
 }
 
 html_use_smartypants = True
@@ -187,7 +190,7 @@ html_logo = "rst/_static/logo.png"
 # the docs. This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
 
-html_favicon = "rst/_static/css/imgs/vulcanexus_icon.ico"
+html_favicon = "rst/_static/images/ARISE_icon.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
