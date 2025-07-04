@@ -7,8 +7,6 @@ import pathlib
 import requests
 import sys
 
-from docutils.parsers.rst import Directive
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -153,7 +151,7 @@ html_theme = "furo"
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_options = {
-    "navigation_with_keys": true,
+    "navigation_with_keys": True,
     "top_of_page_buttons": [],
     "light_css_variables": {
         "color-brand-primary": "#489e9a",

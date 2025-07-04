@@ -1,3 +1,5 @@
+.. _project:
+
 The ARISE Framework Project
 ===========================
 

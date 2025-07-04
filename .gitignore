@@ -170,6 +170,7 @@ tags
 build/
 install/
 log/
+arise_docs_venv/
 
 ### Visual Studio ###
 .vs
