@@ -1,3 +1,0 @@
-The ARISE Framework Project
-===========================
-...

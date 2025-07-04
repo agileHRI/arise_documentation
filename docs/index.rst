@@ -1,3 +1,5 @@
+.. _arise-framework-docs:
+
 Welcome to the ARISE Framework documentation!
 =============================================
 
