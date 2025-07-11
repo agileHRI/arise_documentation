@@ -74,7 +74,10 @@ Vulcanexus is distributed as modular meta-packages:
 Compatibility with ROS 2 Applications
 -------------------------------------
 
-Vulcanexus is fully compatible with existing robotics applications developed using ROS 2. This means that developers can run their current ROS 2-based projects on Vulcanexus without modifying source code, launch files, or message/service definitions. All standard ROS 2 APIs, tools (such as ros2 topic, ros2 service, and ros2 launch), and communication patterns are supported out of the box. As a result, teams can migrate or integrate their applications with Vulcanexus seamlessly, benefiting from its enhanced features and performance improvements while maintaining interoperability with the broader ROS 2 ecosystem.
+Vulcanexus is fully compatible with existing robotics applications developed using ROS 2.
+This means that developers can run their current ROS 2-based projects on Vulcanexus without modifying source code, launch files, or message/service definitions.
+All standard ROS 2 APIs, tools (such as ``ros2 topic``, ``ros2 service``, and ``ros2 launch``), and communication patterns are supported out of the box.
+As a result, teams can migrate or integrate their applications with Vulcanexus seamlessly, benefiting from its enhanced features and performance improvements while maintaining interoperability with the broader ROS 2 ecosystem.
 
 Use in ARISE
 ------------
