@@ -12,4 +12,4 @@ The ARISE Framework Project
    :maxdepth: 1
    :hidden:
 
-   rst/project/vulcanexus
+   vulcanexus

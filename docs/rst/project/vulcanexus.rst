@@ -1,11 +1,23 @@
 .. _vulcanexus:
 
-.. image:: /_static/images/vulcanexus_banner.png
+.. raw:: html
+
+    </br></br>
+
+.. image:: /rst/_static/images/vulcanexus_banner.png
     :align: center
     :alt: Vulcanexus
 
+.. raw:: html
+
+   <div style="visibility: hidden;">
+
 Vulcanexus
 ==========
+
+.. raw:: html
+
+   </div>
 
 Vulcanexus is an all-in-one toolset built around the ROS 2 (Robot Operating System 2) ecosystem.
 It is developed and maintained by eProsima, the same team behind Fast DDS, and plays a key role in the ARISE framework by providing a solid, extensible, and production-grade base for robotics middleware. It is fully compatible with existing robotics applications developed using ROS 2, allowing seamless migration and integration without requiring changes to current ROS 2-based projects.
