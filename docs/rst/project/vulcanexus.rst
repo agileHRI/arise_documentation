@@ -26,7 +26,7 @@ Vulcanexus is designed to streamline the development of robotic applications by 
 
 Unlike the standard ROS 2 distribution, Vulcanexus introduces a tailored suite of enhancements, packages, and configuration profiles that simplify ROS 2 usage in real-world deployments.
 
-For more detailed information, guidance, and the latest updates, please refer to the official Vulcanexus documentation at https://docs.vulcanexus.org/en/latest/.
+For more detailed information, guidance, and the latest updates, please refer to the official Vulcanexus documentation at `docs.vulcanexus.org <https://docs.vulcanexus.org/en/latest/>`__.
 
 What Vulcanexus Offers
 -----------------------
@@ -49,10 +49,10 @@ Vulcanexus provides significant improvements and additions over base ROS 2:
 
 **3. Developer Tooling**
 
-- ``ROS 2 Monitor``: GUI tool for DDS/ROS 2 runtime introspection
-- ``ROS 2 Spy``: CLI utility for debugging message flow and topic visibility
-- ``ROS 2 Record & Replay``: Tools to log/playback DDS traffic
-- ``ROS 2 Router``: DDS bridging for remote/cloud/multi-domain communication
+- `ROS 2 Monitor <https://fast-dds-monitor.readthedocs.io>`__: GUI tool for DDS/ROS 2 runtime introspection
+- `ROS 2 Spy <https://fast-dds-spy.readthedocs.io>`__: CLI utility for debugging message flow and topic visibility
+- `ROS 2 Record & Replay <https://dds-recorder.readthedocs.io>`__: Tools to log/playback DDS traffic
+- `ROS 2 Router <https://eprosima-dds-router.readthedocs.io>`__: DDS bridging for remote/cloud/multi-domain communication
 
 **4. Modular Meta-Packages**
 
@@ -120,11 +120,13 @@ This closed-loop system architecture allows the creation of real-time digital tw
 Resources
 ---------
 
+For more information, resources, and support regarding Vulcanexus, you can explore the following links:
+
 - Vulcanexus Docs: https://docs.vulcanexus.org/en/latest/
 - Fast DDS: https://github.com/eProsima/Fast-DDS
+- Docker Images: https://hub.docker.com/r/eprosima/vulcanexus
 - DDS Enabler: https://github.com/eProsima/FIWARE-DDS-Enabler
 - Orion-LD: https://github.com/FIWARE/context.Orion-LD
-- Docker Images: https://hub.docker.com/r/eprosima/vulcanexus
 - ARISE Portal: https://arise-middleware.eu
 
 
