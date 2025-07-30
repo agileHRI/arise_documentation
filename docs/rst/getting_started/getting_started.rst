@@ -12,7 +12,5 @@ Contents
 
 .. toctree::
 
-   rst/getting_started/getting_started
-   rst/project/project
-   rst/tutorials/tutorials
-   rst/how_to/how_to
+   all_in_one_middleware
+   ros2_fiware_basic_app

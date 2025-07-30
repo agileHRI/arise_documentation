@@ -18,7 +18,7 @@ Contents
 .. toctree::
 
    rst/getting_started/getting_started
-   rst/project/project
+   rst/arise_framework/arise_framework
    rst/tutorials/tutorials
    rst/how_to/how_to
 
