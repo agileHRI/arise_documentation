@@ -1,26 +1,14 @@
 Tutorials
 =========
-The tutorials are a series of step-by-step instructions that aim to help developers make the most of the ARISE framework in their industrial robotics applications.
 
-It’s best to follow them in sequence on your first attempt, as each tutorial builds on the previous ones and they are not intended to serve as comprehensive documentation.
+The tutorials in this section are carefully crafted to provide final users with a structured and practical approach to mastering the ARISE framework for industrial robotics applications.
+Each tutorial offers step-by-step instructions, guiding you through various features and functionalities of the framework to help you achieve specific objectives.
+These tutorials are designed to build your expertise incrementally, starting with foundational concepts and progressing to more advanced topics.
+
+For first-time users, it is highly recommended to follow the tutorials in sequence, as each one builds upon the knowledge and skills developed in the previous lessons.
+While these tutorials aim to provide hands-on experience, they are not intended to replace comprehensive documentation but rather to complement it by offering focused, task-oriented guidance.
+By following these tutorials, you will gain practical insights and a deeper understanding of how to effectively utilize the ARISE framework in real-world scenarios.
 
 .. warning::
 
-    This section is a work in progress. Content will be added soon.
-
-..
-    Beginner Tutorials (1XX series):
-    --------------------------------
-
-    Tutorial 100
-    ~~~~~~~~~~~~
-
-
-    Tutorial 101
-    ~~~~~~~~~~~~
-
-    Intermediate Tutorials (2XX series):
-    ------------------------------------
-
-    Tutorial 200
-    ~~~~~~~~~~~~
+    This section is a work in progress. Tutorials will be added soon.
