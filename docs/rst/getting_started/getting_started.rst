@@ -7,8 +7,12 @@ Getting Started
 
     This section is a work in progress. Content will be added soon.
 
-..
-    .. _overall_introduction:
+Contents
+--------
 
-    Overall Introduction to the ARISE Framework
-    -------------------------------------------
+.. toctree::
+
+   rst/getting_started/getting_started
+   rst/project/project
+   rst/tutorials/tutorials
+   rst/how_to/how_to
