@@ -57,9 +57,9 @@ Here's a breakdown of the configuration file structure:
 - ``ngsild``: This section defines the mapping between DDS Topics and NGSI-LD entities.
   Each topic is associated with:
 
-    - ``entityType``: The type of the NGSI-LD entity (e.g., ``Robot``).
-    - ``entityId``: The unique identifier for the NGSI-LD entity (e.g., ``urn:ngsi-ld:robot:1``).
-    - ``attribute``: The attribute of the NGSI-LD entity that corresponds to the DDS Topic (e.g., ``chatter``).
+  - ``entityType``: The type of the NGSI-LD entity (e.g., ``Robot``).
+  - ``entityId``: The unique identifier for the NGSI-LD entity (e.g., ``urn:ngsi-ld:robot:1``).
+  - ``attribute``: The attribute of the NGSI-LD entity that corresponds to the DDS Topic (e.g., ``chatter``).
 
 This configuration ensures that data published on the ``rt/chatter`` DDS Topic in ROS 2 is mapped to the ``chatter`` attribute of the ``Robot`` entity in the FIWARE Context Broker. Similarly, data injected into the ``chatter`` attribute of the ``Robot`` entity in the Context Broker is published back to the ``/chatter`` DDS Topic in ROS 2.
 
