@@ -11,6 +11,8 @@ Contents
 --------
 
 .. toctree::
+   :titlesonly:
+   :maxdepth: 1
 
    all_in_one_middleware
    ros2_fiware_basic_app
