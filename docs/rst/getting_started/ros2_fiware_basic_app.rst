@@ -51,15 +51,26 @@ Create a file named `context_broker_config.json` with the following content:
 
 Here's a breakdown of the configuration file structure:
 
-- **`dds` Section**: This section contains the configuration for the DDS (Data Distribution Service) transport layer.
+- `dds`: This section contains the configuration for the DDS (Data Distribution Service) transport layer.
   In this case, it specifies the domain ID and transport type (e.g., UDP) used for communication.
 
-- **`ngsild` Section**: This section defines the mapping between DDS Topics and NGSI-LD entities. Each topic is associated with:
+- `ngsild`: This section defines the mapping between DDS Topics and NGSI-LD entities.
+  Each topic is associated with:
   - `entityType`: The type of the NGSI-LD entity (e.g., `Robot`).
   - `entityId`: The unique identifier for the NGSI-LD entity (e.g., `urn:ngsi-ld:robot:1`).
   - `attribute`: The attribute of the NGSI-LD entity that corresponds to the DDS Topic (e.g., `chatter`).
 
 This configuration ensures that data published on the `/chatter` DDS Topic in ROS 2 is mapped to the `chatter` attribute of the `Robot` entity in the FIWARE Context Broker. Similarly, data injected into the `chatter` attribute of the `Robot` entity in the Context Broker is published back to the `/chatter` DDS Topic in ROS 2.
+
+It is important to note that any data published to a DDS Topic that is not explicitly defined in the `context_broker_config.json` file will be automatically saved in a default NGSI-LD entity.
+This entity is identified by the unique identifier `urn:ngsi-ld:dds:default`.
+
+For example:
+- If a message is published to a topic named `/unknown_topic` that is not mapped in the configuration file, the data will be stored in the `urn:ngsi-ld:dds:default` entity.
+- The attribute name for such data will match the DDS Topic name (e.g., `unknown_topic`).
+
+This behavior ensures that no data is lost, even if the topic is not pre-configured.
+However, for better organization and clarity, it is recommended to define all expected topics in the configuration file whenever possible.
 
 To run the FIWARE Context Broker, we will use Docker Compose.
 Create a `docker-compose.yml` file with the following content:
@@ -214,6 +225,14 @@ Now, run the command from previous section to observe the data being published f
 
 Conclusion
 ----------
-This tutorial provides a basic yet powerful demonstration of how to integrate ROS 2 with the FIWARE Context Broker. By following these steps, you can extend this setup to suit more complex use cases and applications.
+
+In this tutorial, we demonstrated how to establish seamless communication between ROS 2 and the FIWARE Context Broker using Docker containers. By following the steps outlined, you were able to:
+
+- Publish data from ROS 2 to the FIWARE Context Broker.
+- Inject data into the FIWARE Context Broker and observe it being published back into the ROS 2 environment.
+
+This bidirectional communication enables powerful integrations between robotics systems and smart city platforms, allowing for real-time data exchange and enhanced interoperability. The use of Docker ensures a portable and reproducible setup, making it easier to deploy and scale the solution.
+
+Feel free to expand on this setup by adding more DDS Topics and NGSI-LD entities to the configuration file, or by integrating additional ROS 2 nodes and FIWARE components to suit your specific use case.
 
 
