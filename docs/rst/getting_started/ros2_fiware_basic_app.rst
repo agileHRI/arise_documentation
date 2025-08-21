@@ -71,7 +71,7 @@ For example:
 - If a message is published to a topic named ``/unknown_topic`` that is not mapped in the configuration file, the data will be stored in the ``urn:ngsi-ld:dds:default`` entity.
 - The attribute name for such data will match the DDS Topic name (e.g., ``unknown_topic``).
 
-This behavior ensures that no data is lost, even if the topic is not pre-configured.
+This behavior ensures that no data is lost, even if the topic is not explicitly defined in advance.
 However, for better organization and clarity, it is recommended to define all expected topics in the configuration file whenever possible.
 
 To run the FIWARE Context Broker, we will use Docker Compose.
