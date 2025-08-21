@@ -23,7 +23,7 @@ Running the FIWARE Context Broker
 
 The Context Broker requires a simple configuration file to establish a mapping between DDS Topics and NGSI-LD entity attributes.
 This configuration file acts as a bridge, ensuring that data published on specific DDS Topics is correctly associated with the corresponding attributes of NGSI-LD entities.
-By defining this mapping in the configuration file, the Context Broker can seamlessly translate and synchronize data between the DDS (Data Distribution Service).
+By defining this mapping in the configuration file, the Context Broker facilitates bidirectional translation and synchronization of data between DDS (Data Distribution Service) and NGSI-LD.
 
 Create a file named `context_broker_config.json` with the following content:
 
@@ -51,7 +51,7 @@ Create a file named `context_broker_config.json` with the following content:
 
 Here's a breakdown of the configuration file structure:
 
-- ``dds``: This section contains the configuration for the DDS (Data Distribution Service) transport layer.
+- ``dds``: This section contains the configuration for the DDS transport layer.
   In this case, it specifies the domain ID and transport type (e.g., UDP) used for communication.
 
 - ``ngsild``: This section defines the mapping between DDS Topics and NGSI-LD entities.
@@ -61,12 +61,13 @@ Here's a breakdown of the configuration file structure:
   - ``entityId``: The unique identifier for the NGSI-LD entity (e.g., ``urn:ngsi-ld:robot:1``).
   - ``attribute``: The attribute of the NGSI-LD entity that corresponds to the DDS Topic (e.g., ``chatter``).
 
-This configuration ensures that data published on the ``rt/chatter`` DDS Topic in ROS 2 is mapped to the ``chatter`` attribute of the ``Robot`` entity in the FIWARE Context Broker. Similarly, data injected into the ``chatter`` attribute of the ``Robot`` entity in the Context Broker is published back to the ``/chatter`` DDS Topic in ROS 2.
+This configuration ensures that data published on the ``rt/chatter`` DDS Topic in ROS 2 is mapped to the ``chatter`` attribute of the ``Robot`` entity in the FIWARE Context Broker. Similarly, data injected into the ``chatter`` attribute of the ``Robot`` entity in the Context Broker is published back to the ``rt/chatter`` DDS Topic in ROS 2.
 
 It is important to note that any data published to a DDS Topic that is not explicitly defined in the `context_broker_config.json` file will be automatically saved in a default NGSI-LD entity.
 This entity is identified by the unique identifier ``urn:ngsi-ld:dds:default``.
 
 For example:
+
 - If a message is published to a topic named ``/unknown_topic`` that is not mapped in the configuration file, the data will be stored in the ``urn:ngsi-ld:dds:default`` entity.
 - The attribute name for such data will match the DDS Topic name (e.g., ``unknown_topic``).
 
@@ -80,44 +81,75 @@ Create a `docker-compose.yml` file with the following content:
 
     services:
 
-    mongodb:
-        image: mongo:4.4
-        privileged: true
-        ipc: host
-        network_mode: host
-        command: --bind_ip_all
-        volumes:
-        - mongo_data:/data/db
+        mongodb:
+            image: mongo:4.4
+            privileged: true
+            ipc: host
+            network_mode: host
+            command: --bind_ip_all
+            volumes:
+            - mongo_data:/data/db
 
     orion:
-        image: fiware/orion-ld:1.10.0-PRE-1711
-        privileged: true
-        ipc: host
-        network_mode: host
-        depends_on:
-        - mongodb
-        restart: always
-        command: -dbhost localhost -wip dds -mongocOnly
-        environment:
-        - ORIONLD_MONGO_HOST=localhost
-        volumes:
-        - ./context_broker_config.json:/root/.orionld
-        healthcheck:
-        test: curl --fail -s http://localhost:1026/version || exit 1
-        interval: 30s
-        retries: 15
+            image: fiware/orion-ld:1.10.0-PRE-1711
+            privileged: true
+            ipc: host
+            network_mode: host
+            depends_on:
+                - mongodb
+            restart: always
+            command: -dbhost localhost -wip dds -mongocOnly
+            environment:
+                - ORIONLD_MONGO_HOST=localhost
+            volumes:
+                - ./context_broker_config.json:/root/.orionld
+            healthcheck:
+                test: curl --fail -s http://localhost:1026/version || exit 1
+                interval: 30s
+                retries: 15
 
     volumes:
-    mongo_data:
+        mongo_data:
 
 
 This configuration will set up FIWARE Context Broker and MongoDB, the database used by the Context Broker to save all data. To start the services, run the following command:
 
 .. code-block:: bash
 
-    docker-compose up -d
+    docker compose up -d
+
+.. note::
+
+    This tutorial utilizes Docker Compose to manage containerized applications.
+    It assumes that Docker Compose v2 (which is integrated with the Docker CLI) is installed on your system, so the `docker compose` command is used instead of the older `docker-compose` command.
+
+    If the previous command did not work, try using the following command instead:
+
+    .. code-block:: bash
+
+        docker-compose up -d
 
 This command will download the necessary images and start the containers in detached mode.
+
+.. note::
+
+    If something goes wrong during the setup, you can run the previous command without the detached mode to see the logs coming from the Context Broker:
+
+    .. code-block:: bash
+
+      docker compose up
+
+    This will display the logs in real time, helping you identify any issues.
+
+.. note::
+
+    To stop and remove the running containers, you can use the following command:
+
+    .. code-block:: bash
+
+      docker compose down
+
+    This will clean up the environment by stopping and removing all containers defined in the `docker-compose.yml` file.
 
 Running the ROS 2 Publisher
 ---------------------------
@@ -167,11 +199,12 @@ Below is an example of how to achieve this:
 .. code-block:: bash
 
     while true; do
-        curl http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?prettyPrint=yes&local=true -s -S -H 'Accept: application/json' | jq -r '.chatter.value.data'
+        curl "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?prettyPrint=yes&local=true" -s -S -H 'Accept: application/json' | jq -r '.chatter.value.data'
         sleep 1
     done
 
 In this example:
+
 - The ``curl`` command sends a request to the Context Broker's endpoint, specifying the entity ID (``urn:ngsi-ld:robot:1``) and the attribute (``chatter``) to retrieve.
 - The ``-H 'Accept: application/json'`` header ensures the response is returned in JSON format.
 - The ``jq`` tool is used to format and display the JSON response in a readable manner.
@@ -200,10 +233,11 @@ For example, to update the ``chatter`` attribute of the ``Robot`` entity, you ca
     curl http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1/attrs/chatter -X PATCH -d "$payload" -H 'Content-Type: application/json'
 
 In this example:
+
 - The ``-X PATCH`` option specifies that the request is a partial update.
 - The URL points to the ``attrs`` endpoint of the ``Robot`` entity.
-- The ``-H 'Content-Type: application/json'`` header indicates that the request body is in JSON format.
 - The ``-d`` option provides the JSON payload, which updates the ``chatter`` attribute with a new value.
+- The ``-H 'Content-Type: application/json'`` header indicates that the request body is in JSON format.
 
 After running this command, the updated value will be available in the ROS 2 environment if the appropriate mapping is configured in the `context_broker_config.json` file.
 
