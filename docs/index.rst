@@ -16,6 +16,8 @@ Contents
 --------
 
 .. toctree::
+   :titlesonly:
+   :maxdepth: 1
 
    rst/getting_started/getting_started
    rst/arise_framework/arise_framework
