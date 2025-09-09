@@ -61,7 +61,7 @@ Here's a breakdown of the configuration file structure:
   - ``entityId``: The unique identifier for the NGSI-LD entity (e.g., ``urn:ngsi-ld:robot:1``).
   - ``attribute``: The attribute of the NGSI-LD entity that corresponds to the DDS Topic (e.g., ``chatter``).
 
-This configuration ensures that data published on the ``rt/chatter`` DDS Topic in ROS 2 is mapped to the ``chatter`` attribute of the ``Robot`` entity in the FIWARE Context Broker. Similarly, data injected into the ``chatter`` attribute of the ``Robot`` entity in the Context Broker is published back to the ``rt/chatter`` DDS Topic in ROS 2.
+This configuration ensures that data published on the ``rt/chatter`` DDS Topic in ROS 2 is mapped to the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity in the FIWARE Context Broker. Similarly, data injected into the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity in the Context Broker is published back to the ``rt/chatter`` DDS Topic in ROS 2.
 
 It is important to note that any data published to a DDS Topic that is not explicitly defined in the `context_broker_config.json` file will be automatically saved in a default NGSI-LD entity.
 This entity is identified by the unique identifier ``urn:ngsi-ld:dds:default``.
@@ -82,7 +82,7 @@ Create a `docker-compose.yml` file with the following content:
     services:
 
         mongodb:
-            image: mongo:4.4
+            image: mongo:7.0
             privileged: true
             ipc: host
             network_mode: host
@@ -112,7 +112,7 @@ Create a `docker-compose.yml` file with the following content:
         mongo_data:
 
 
-This configuration will set up FIWARE Context Broker and MongoDB, the database used by the Context Broker to save all data. To start the services, run the following command:
+This configuration will set up FIWARE Context Broker and MongoDB, the database used by the Context Broker to save its current state. To start the services, run the following command:
 
 .. code-block:: bash
 
@@ -189,7 +189,7 @@ These messages can then be consumed by the FIWARE Context Broker if the appropri
 Querying the Context Broker via REST API
 ----------------------------------------
 
-At this stage, the FIWARE Context Broker is actively receiving data published in the ROS 2 environment and storing it in the ``chatter`` attribute of the ``Robot`` entity.
+At this stage, the FIWARE Context Broker is actively receiving data published in the ROS 2 environment and storing it in the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity.
 To verify and access this data, you can query the Context Broker using the ``curl`` command.
 
 The ``curl`` command sends a ``GET`` request to the Context Broker to retrieve the current value of the ``chatter`` attribute.
@@ -224,7 +224,7 @@ You can do this by pressing ``Ctrl+C`` in the respective terminal windows where 
 
 To inject data into the FIWARE Context Broker, you can use the ``curl`` command to send a ``POST`` or ``PATCH`` request. This allows you to create or update entities and their attributes in the Context Broker.
 
-For example, to update the ``chatter`` attribute of the ``Robot`` entity, you can use the following command:
+For example, to update the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity, you can use the following command:
 
 .. code-block:: bash
 
@@ -235,7 +235,7 @@ For example, to update the ``chatter`` attribute of the ``Robot`` entity, you ca
 In this example:
 
 - The ``-X PATCH`` option specifies that the request is a partial update.
-- The URL points to the ``attrs`` endpoint of the ``Robot`` entity.
+- The URL points to the ``attrs`` endpoint of the ``urn:ngsi-ld:robot:1`` entity.
 - The ``-d`` option provides the JSON payload, which updates the ``chatter`` attribute with a new value.
 - The ``-H 'Content-Type: application/json'`` header indicates that the request body is in JSON format.
 
