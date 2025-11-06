@@ -11,7 +11,7 @@ It provides a structured approach to addressing ethical, legal, and social dimen
 Demos Helsinki, the SSH partner of the ARISE project, leads the ongoing development of the framework. 
 To develop this framework, we examined the ongoing discussions and frameworks around technology ethics and the current day challenges of developing emerging technologies, particularly in the field of robotics and AI. 
 This process involved a literature review, expert interviews, as well as ethnographic on-site visits to technology partners' campuses. 
-The first version of the SSH framework that emerged from these qualitative insights can be found here.  
+The first version of the SSH framework that emerged from these qualitative insights can be found `here <https://arise-middleware.eu/wp-content/assets/deliverables/ARISE-D3.1-Initial_Open_SSH_Framework_human-centric_agile_HRI_202412.pdf>`_.  
 
 As part of the ongoing efforts to support HRI developers in integrating human-centric principles into their work, we developed a website (`arise-ssh.info <https://arise-ssh.info>`_) that presents a more accessible and practical version of the ARISE SSH framework. 
 Our hope is that this webtool can serve as the primary resource for technology developers to understand the SSH framework and discover ways to incorporate it into their projects' decision making processes. 
