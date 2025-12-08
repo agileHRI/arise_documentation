@@ -2,6 +2,7 @@ analytics
 Customizable
 eProsima
 extensibility
+HRI
 LD
 lossy
 middleware
