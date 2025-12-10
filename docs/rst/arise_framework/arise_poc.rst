@@ -40,31 +40,31 @@ The actors involved in the scenario are:
    It represents the data source utilized by the TEF.
 
 **IoT Agent OPC UA**
-   The connector through which to join the industrial environment to this FIWARE-based platform can be configured as described in `Documentation <https://github.com/Engineering-Research-and-Development/iotagent-opcua/blob/master/docs/user_and_programmers_manual.md>`_ and in `GitHub <https://github.com/Engineering-Research-and-Development/iotagent-opcua/tree/master>`_.
+   The connector through which to join the industrial environment to this FIWARE-based platform can be configured as described in `Documentation <https://github.com/Engineering-Research-and-Development/iotagent-opcua/blob/master/docs/user_and_programmers_manual.md>`__ and in `GitHub <https://github.com/Engineering-Research-and-Development/iotagent-opcua/tree/master>`__.
    In order to start working with the above mentioned OPC UA server, configuration files have been already edited and made available in the *conf* folder.
 
 **ROS2/FastDDS**
    This connector implements both an Application Programming Interface (API) and a communication protocol that deploys a Data-Centric Publisher-Subscriber (DCPS) model, with the purpose of establishing efficient and reliable information distribution among Real-Time Systems.
-   More information can be found here in `Documentation <https://fast-dds.doc.eprosima.com/en/latest/>`_ and in `GitHub <https://github.com/FIWARE/context.Orion-LD/tree/develop/demo/ros2>`_
+   More information can be found here in `Documentation <https://fast-dds.doc.eprosima.com/en/latest/>`__ and in `GitHub <https://github.com/FIWARE/context.Orion-LD/tree/develop/demo/ros2>`__
 
 **Orion LD Context Broker**
    It is the entry point of each FIWARE platform that adopts the NGSI LD data model. It can be external, however, in order to ensure a self-contained and self-consistent testing environment, it is included in this PoC as part of the Docker Compose setup.
-   More information can be found here in `Documentation <https://github.com/FIWARE/context.Orion-LD/tree/develop/doc/manuals-ld>`_ and in `GitHub <https://github.com/FIWARE/context.Orion-LD>`_
+   More information can be found here in `Documentation <https://github.com/FIWARE/context.Orion-LD/tree/develop/doc/manuals-ld>`__ and in `GitHub <https://github.com/FIWARE/context.Orion-LD>`__
 
 **MongoDB**
    The database that saves the current state of the data passed through the context broker. It is used by the Orion LD to hold context data information such as data entities, subscriptions and registrations.
-   More information can be found in `Documentation <https://www.mongodb.com/docs/manual/>`_ and in `GitHub <https://github.com/mongodb/mongo>`_
+   More information can be found in `Documentation <https://www.mongodb.com/docs/manual/>`__ and in `GitHub <https://github.com/mongodb/mongo>`__
 
 **Mintaka**
-   It is a Generic Enabler (GE) of the FIWARE ecosystem designed for time series data storage and management. It serves as a lightweight, scalable API that allows the ingestion, querying, and analysis of historical context information from FIWARE Context Brokers. More information can be found in `Documentation <https://github.com/FIWARE/mintaka?tab=readme-ov-file#documentation>`_ and in `GitHub <https://github.com/FIWARE/mintaka>`_
+   It is a Generic Enabler (GE) of the FIWARE ecosystem designed for time series data storage and management. It serves as a lightweight, scalable API that allows the ingestion, querying, and analysis of historical context information from FIWARE Context Brokers. More information can be found in `Documentation <https://github.com/FIWARE/mintaka?tab=readme-ov-file#documentation>`__ and in `GitHub <https://github.com/FIWARE/mintaka>`__
 
 **TimescaleDB**
-   It is a time series database built on PostgreSQL, designed to handle large-scale, time-stamped data efficiently. It offers powerful SQL support for managing time series data, with features like automatic data partitioning, real-time aggregation, and advanced query capabilities. More information can be found in `Documentation <https://docs.timescale.com/>`_ and in `GitHub <https://github.com/timescale/timescaledb>`_
+   It is a time series database built on PostgreSQL, designed to handle large-scale, time-stamped data efficiently. It offers powerful SQL support for managing time series data, with features like automatic data partitioning, real-time aggregation, and advanced query capabilities. More information can be found in `Documentation <https://docs.timescale.com/>`__ and in `GitHub <https://github.com/timescale/timescaledb>`__
 
 **Grafana**
    It is an open-source analytics and visualization platform that allows users to visualize data stored in TimeScaleDB through customizable dashboards.
    It supports data representation using charts, graphs, tables, and alerts. Besides TimeScaleDB, Grafana integrates with a wide range of data sources, including Prometheus, InfluxDB, MySQL, PostgreSQL, Elasticsearch, and more.
-   It is released under the Apache License 2.0. More information can be found in `Documentation <https://grafana.com/>`_ and in `GitHub <https://github.com/grafana/grafana>`_.
+   It is released under the Apache License 2.0. More information can be found in `Documentation <https://grafana.com/>`__ and in `GitHub <https://github.com/grafana/grafana>`__.
 
 Step-by-step Guide
 ===================
@@ -80,8 +80,8 @@ Requirements
 
 **Install docker and docker-compose** by following the instructions available on the official web site:
 
-- Docker: `here <https://docs.docker.com/install/linux/docker-ce/ubuntu/>`_
-- Docker-Compose: `here <https://docs.docker.com/compose/install/>`_
+- Docker: `here <https://docs.docker.com/install/linux/docker-ce/ubuntu/>`__
+- Docker-Compose: `here <https://docs.docker.com/compose/install/>`__
 
 **Verify Installation**: Run the following commands to check Docker and Docker Compose:
 
@@ -177,7 +177,7 @@ Step 4 - Access the Grafana Dashboard
 
 In the context of the ARISE PoC, Grafana is used to visualize and analyze the data collected from OPC UA and ROS2 devices, offering an intuitive interface to monitor the performance, and trends of connected systems.
 This tool plays a critical role in helping users test various use cases by providing a clear view of the data flow and operational metrics. Grafana is distributed under the Apache License 2.0, ensuring that it is free to use, modify, and distribute.
-Its active open-source community and extensive documentation make it accessible to users of all expertise levels. 
+Its active open-source community and extensive documentation make it accessible to users of all expertise levels.
 For more details, including installation guides, plugins, and advanced configuration options, visit the official Grafana website at https://grafana.com/.
 
 For this PoC, Grafana is accessible at the link https://localhost/login using the default credentials admin/admin
@@ -185,8 +185,8 @@ For this PoC, Grafana is accessible at the link https://localhost/login using th
 Configuring a DataSource
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Grafana the Timescale datasource can be configured using the datasources.yaml file, which is part of Grafana's provisioning system. 
-This allows for automated setup and consistent configuration of the datasource when Grafana starts. 
+In Grafana the Timescale datasource can be configured using the datasources.yaml file, which is part of Grafana's provisioning system.
+This allows for automated setup and consistent configuration of the datasource when Grafana starts.
 TimescaleDB, a powerful time-series database built on PostgreSQL, integrates seamlessly with Grafana, enabling efficient visualization of time-series data.
 
 To configure the TimescaleDB datasource, follow these steps:
@@ -379,8 +379,8 @@ Click on "New Alert Rule" to define a new Rule, enter the name, define the query
      <img src="images/newrule_1.png" alt="Query and Alert Condition">
      </p>
 
-Define a new threshold, specifying both the parameter to be evaluated (Input) and the condition for exceeding the threshold. 
-Specify a folder where the alert rules will be saved, set an evaluation behavior to define how the alert rule will be evaluated. 
+Define a new threshold, specifying both the parameter to be evaluated (Input) and the condition for exceeding the threshold.
+Specify a folder where the alert rules will be saved, set an evaluation behavior to define how the alert rule will be evaluated.
 Finally, select the previously defined contact point.
 
 .. raw:: html
