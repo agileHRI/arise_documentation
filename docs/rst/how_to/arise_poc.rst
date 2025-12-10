@@ -117,7 +117,7 @@ Here are some environment variables that must be configured:
 - ``IOTA_SERVICE`` defines the devices are registered;
 - ``IOTA_OPCUA_ENDPOINT`` is used in FIWARE IoT Agent for OPC UA to specify the OPC UA server endpoint.
 
-For a more complete description on how to configure the IoT Agent, go to `link <https://github.com/Engineering-Research-and-Development/iotagent-opcua/blob/master/docs/howto.md>`_.
+For a more complete description on how to configure the IoT Agent, go to `link <https://github.com/Engineering-Research-and-Development/iotagent-opcua/blob/master/docs/howto.md>`__.
 
 Step 3 - Build & Run the ARISE PoC
 -----------------------------------
