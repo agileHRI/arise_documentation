@@ -19,4 +19,3 @@ Components
    ros4hri
    ssh_framework
    arise_poc
-   
