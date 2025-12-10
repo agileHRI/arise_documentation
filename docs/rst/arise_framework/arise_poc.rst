@@ -277,11 +277,11 @@ By visualizing these parameters on the dashboard, users can monitor the performa
 
 To building dashboards with historical data, the Grafana instance in ARISE PoC integrates the "Grafana Infinity Datasource" plugin, which allows external APIs to be added as data sources, supporting various formats such as JSON, XML, and more.
 
-More information about this plugin are available at the following `link <https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/>`_
+More information about this plugin are available at the following `link <https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/>`__
 
 The APIs to access historical data are provided by Mintaka, a FIWARE Generic Enabler (GE), which implements an APIs to access the retrieval of temporal data in NGSI-LD format. Also it allows transparent to the user, the database used for historicization.
 
-More information about Mintaka and the implemented APIs are available at the following `link <https://github.com/FIWARE/mintaka/blob/main/api/full_api.yaml>`_
+More information about Mintaka and the implemented APIs are available at the following `link <https://github.com/FIWARE/mintaka/blob/main/api/full_api.yaml>`__
 
 The Mintaka API that was chosen has the following syntax:
 
@@ -338,11 +338,11 @@ For the ARISE PoC, the Grafana alert system is activated to monitor specific eve
 In this context, the Contact Point, i.e., the notification distribution channel, must therefore be defined. Among these channels, we have Telegram, Microsoft Teams, Slack, Discord, etc.
 As an example, Telegram was chosen, and the BOT API Token and Chat ID were inserted.
 
-More details can be found at the `link <https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-telegram/#:~:text=In%20Grafana%2C%20navigate%20to%20Alerting%20%3E%20Alert%20rules.,created%20contact%20point.%20Click%20Save%20rule%20and%20exit>`_.
+More details can be found at the `link <https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-telegram/#:~:text=In%20Grafana%2C%20navigate%20to%20Alerting%20%3E%20Alert%20rules.,created%20contact%20point.%20Click%20Save%20rule%20and%20exit>`__.
 
 **Step 1 - Define Contact Point**
 
-Select the Alerting from the Grafana menu and then Contact Points. Fill in the fields shown in the figure with the Bot API Token and Chat ID obtained from Telegram `link <https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-telegram/#:~:text=In%20Grafana%2C%20navigate%20to%20Alerting%20%3E%20Alert%20rules.,created%20contact%20point.%20Click%20Save%20rule%20and%20exit>`_
+Select the Alerting from the Grafana menu and then Contact Points. Fill in the fields shown in the figure with the Bot API Token and Chat ID obtained from Telegram `link <https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-telegram/#:~:text=In%20Grafana%2C%20navigate%20to%20Alerting%20%3E%20Alert%20rules.,created%20contact%20point.%20Click%20Save%20rule%20and%20exit>`__
 
 .. raw:: html
 
