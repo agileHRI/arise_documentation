@@ -1,0 +1,244 @@
+{
+    "types": {
+    "Device": {
+        "active": [
+        {
+            "name": "Clock05Hz",
+            "type": "Boolean"
+        },
+        {
+            "name": "Icon",
+            "type": "ByteString"
+        },
+        {
+            "name": "StepDataOut",
+            "type": "Byte"
+        },
+        {
+            "name": "StateBits",
+            "type": "Byte"
+        },
+        {
+            "name": "ReadyFlag",
+            "type": "Boolean"
+        },
+        {
+            "name": "CurrentPosition",
+            "type": "Float"
+        },
+        {
+            "name": "CurrentSpeed",
+            "type": "Int16"
+        },
+        {
+            "name": "PushingForce",
+            "type": "Int16"
+        },
+        {
+            "name": "TargetPosition1",
+            "type": "Float"
+        },
+        {
+            "name": "Alarm1",
+            "type": "Byte"
+        },
+        {
+            "name": "Alarm2",
+            "type": "Byte"
+        },
+        {
+            "name": "Alarm3",
+            "type": "Byte"
+        },
+        {
+            "name": "Alarm4",
+            "type": "Byte"
+        },
+        {
+            "name": "BUSY",
+            "type": "Boolean"
+        },
+        {
+            "name": "SVRE",
+            "type": "Boolean"
+        },
+        {
+            "name": "SETON",
+            "type": "Boolean"
+        },
+        {
+            "name": "INP",
+            "type": "Boolean"
+        },
+        {
+            "name": "AREA",
+            "type": "Boolean"
+        },
+        {
+            "name": "WAREA",
+            "type": "Boolean"
+        },
+        {
+            "name": "ESTOP",
+            "type": "Boolean"
+        },
+        {
+            "name": "ALARM",
+            "type": "Boolean"
+        },
+        {
+            "name": "Search0",
+            "type": "Boolean"
+        }
+        ],
+        "lazy": [],
+        "commands": [
+        {
+            "name": "plc_maestro",
+            "type": "command"
+        }
+        ]
+    }
+    },
+    "contexts": [
+    {
+        "id": "urn:ngsi-ld:Device:servidor_1DBRVC",
+        "type": "Device",
+        "mappings": [
+        {
+            "ocb_id": "Clock05Hz",
+            "opcua_id": "ns=4;i=23",
+            "object_id": "ns=4;i=23",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "Icon",
+            "opcua_id": "ns=3;i=6010",
+            "object_id": "ns=3;i=6010",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "StepDataOut",
+            "opcua_id": "ns=4;i=3",
+            "object_id": "ns=4;i=3",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "StateBits",
+            "opcua_id": "ns=4;i=4",
+            "object_id": "ns=4;i=4",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "ReadyFlag",
+            "opcua_id": "ns=4;i=5",
+            "object_id": "ns=4;i=5",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "CurrentPosition",
+            "opcua_id": "ns=4;i=6",
+            "object_id": "ns=4;i=6",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "CurrentSpeed",
+            "opcua_id": "ns=4;i=7",
+            "object_id": "ns=4;i=7",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "PushingForce",
+            "opcua_id": "ns=4;i=8",
+            "object_id": "ns=4;i=8",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "TargetPosition1",
+            "opcua_id": "ns=4;i=9",
+            "object_id": "ns=4;i=9",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "Alarm1",
+            "opcua_id": "ns=4;i=10",
+            "object_id": "ns=4;i=10",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "Alarm2",
+            "opcua_id": "ns=4;i=11",
+            "object_id": "ns=4;i=11",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "Alarm3",
+            "opcua_id": "ns=4;i=12",
+            "object_id": "ns=4;i=12",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "Alarm4",
+            "opcua_id": "ns=4;i=13",
+            "object_id": "ns=4;i=13",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "BUSY",
+            "opcua_id": "ns=4;i=14",
+            "object_id": "ns=4;i=14",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "SVRE",
+            "opcua_id": "ns=4;i=15",
+            "object_id": "ns=4;i=15",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "SETON",
+            "opcua_id": "ns=4;i=16",
+            "object_id": "ns=4;i=16",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "INP",
+            "opcua_id": "ns=4;i=17",
+            "object_id": "ns=4;i=17",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "AREA",
+            "opcua_id": "ns=4;i=18",
+            "object_id": "ns=4;i=18",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "WAREA",
+            "opcua_id": "ns=4;i=19",
+            "object_id": "ns=4;i=19",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "ESTOP",
+            "opcua_id": "ns=4;i=20",
+            "object_id": "ns=4;i=20",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "ALARM",
+            "opcua_id": "ns=4;i=21",
+            "object_id": "ns=4;i=21",
+            "inputArguments": []
+        },
+        {
+            "ocb_id": "Search0",
+            "opcua_id": "ns=4;i=22",
+            "object_id": "ns=4;i=22",
+            "inputArguments": []
+        }
+        ]
+    }
+    ],
+    "contextSubscriptions": []
+}
