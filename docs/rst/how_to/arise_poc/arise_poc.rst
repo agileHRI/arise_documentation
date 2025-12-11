@@ -1,29 +1,16 @@
-.. raw:: html
+.. _how_to_arise_poc:
 
-   <p align="center">
-     <img src="images/ARISE_logo.jpg" alt="ARISE Banner">
-   </p>
-
-   <p align="center">
-    <a href="https://www.fiware.org/developers">
-      <img src="images/fiware.png" alt="FIWARE Banner">
-    </a>
-    <a href="https://opcfoundation.org/">
-      <img src="images/opc_foundation_logo.jpg" alt="OPC Banner">
-    </a>
-   </p>
-
-=======================
 ARISE PoC Guide
-=======================
+===============
 
 Overview
-========
+--------
 
 The ARISE Proof of Concept (PoC) is a FIWARE-based Minimum Viable Platform (MVP) composed of various Docker containers, which encapsulate the application code along with all its dependencies to ensure it runs consistently and reliably across different computing environments.
 This containerized approach simplifies deployment, eliminates dependency conflicts, and provides a scalable platform for testing and validation.
 
-This tutorial is a step-by-step guide that demonstrates how to set up the necessary components and workflows, in order to enable the ARISE PoC to connect seamlessly with various information sources. It also provides the means to test a wide range of use cases (UCs) defined and implemented in the Test and Experimentation Facilities (TEFs).
+This tutorial is a step-by-step guide that demonstrates how to set up the necessary components and workflows, in order to enable the ARISE PoC to connect seamlessly with various information sources.
+It also provides the means to test a wide range of use cases (UCs) defined and implemented in the Test and Experimentation Facilities (TEFs).
 
 .. raw:: html
 
@@ -32,7 +19,7 @@ This tutorial is a step-by-step guide that demonstrates how to set up the necess
    </p>
 
 Actors
-======
+------
 
 The actors involved in the scenario are:
 
@@ -67,12 +54,12 @@ The actors involved in the scenario are:
    It is released under the Apache License 2.0. More information can be found in `Documentation <https://grafana.com/>`__ and in `GitHub <https://github.com/grafana/grafana>`__.
 
 Step-by-step Guide
-===================
+------------------
 
 This section outlines the process for rapidly deploying a fully functional testbed that includes all relevant actors.
 
 Requirements
-------------
+************
 
 - Docker (Version 26.1.5)
 - Docker-compose (Version 1.29+)
@@ -91,7 +78,7 @@ Requirements
    docker compose --version
 
 Step 1 - Clone the ARISE PoC
------------------------------
+****************************
 
 Open a terminal and move into a folder in which to create the new folder containing the ARISE PoC components.
 
@@ -102,7 +89,7 @@ Then run:
    git clone "https://github.com/Engineering-Research-and-Development/arise-poc.git"
 
 Step 2 - Configure the ARISE PoC
----------------------------------
+********************************
 
 Before launching the ARISE PoC, it is essential to edit the docker-compose.yaml file and configure IoT Agent OPC UA service to align with your specific OPC UA Server's specifications.
 
@@ -120,7 +107,7 @@ Here are some environment variables that must be configured:
 For a more complete description on how to configure the IoT Agent, go to `link <https://github.com/Engineering-Research-and-Development/iotagent-opcua/blob/master/docs/howto.md>`__.
 
 Step 3 - Build & Run the ARISE PoC
------------------------------------
+**********************************
 
 To launch the whole PoC:
 
@@ -173,7 +160,7 @@ Now the TurtleSim and the Keyboard controller can be started:
    </p>
 
 Step 4 - Access the Grafana Dashboard
---------------------------------------
+*************************************
 
 In the context of the ARISE PoC, Grafana is used to visualize and analyze the data collected from OPC UA and ROS2 devices, offering an intuitive interface to monitor the performance, and trends of connected systems.
 This tool plays a critical role in helping users test various use cases by providing a clear view of the data flow and operational metrics. Grafana is distributed under the Apache License 2.0, ensuring that it is free to use, modify, and distribute.
@@ -183,7 +170,7 @@ For more details, including installation guides, plugins, and advanced configura
 For this PoC, Grafana is accessible at the link https://localhost/login using the default credentials admin/admin
 
 Configuring a DataSource
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 In Grafana the Timescale datasource can be configured using the datasources.yaml file, which is part of Grafana's provisioning system.
 This allows for automated setup and consistent configuration of the datasource when Grafana starts.
@@ -205,7 +192,7 @@ To configure the TimescaleDB datasource, follow these steps:
 When the ARISE PoC is executed, this datasource.yaml file is mounted into the Grafana's provisioning folder to ensure proper configuration and access to the necessary data sources.
 
 Creating a new Dashboard
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Creating a new dashboard in Grafana allows you to visualize and analyze your data effectively. Here's a step-by-step guide to help you set up a new dashboard:
 
@@ -245,7 +232,7 @@ Creating a new dashboard in Grafana allows you to visualize and analyze your dat
 - Save the Panel and the Dashboard
 
 Example Dashboard in ARISE PoC
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For the ARISE Proof of Concept (PoC), example dashboards have been developed to graphically represent data from both OPC UA devices and ROS2 devices.
 
@@ -332,7 +319,7 @@ Based on the JSON obtained from the Mintaka API, some transformations may be nee
    :align: center
 
 Grafana Alerting System in ARISE PoC
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For the ARISE PoC, the Grafana alert system is activated to monitor specific events or circumstances. This system allows monitoring defined metrics by creating queries and expressions from multiple data sources, defining thresholds and alarm messages.
 In this context, the Contact Point, i.e., the notification distribution channel, must therefore be defined. Among these channels, we have Telegram, Microsoft Teams, Slack, Discord, etc.
@@ -408,10 +395,10 @@ When the thresholds defined on Grafana are exceeded, alert messages are sent to 
      </p>
 
 Configuring the IoTAgent OPC-UA and related dashboards
-=======================================================
+------------------------------------------------------
 
 Start IoT Agent OPC UA initialization
---------------------------------------
+*************************************
 
 For the IoT Agent OPC UA to work an **initialization** phase is required. During this phase the IoT Agent becomes aware of what variables and methods are available on OPC UA server-side. These information can be provided to the agent by means of a configuration file (config.js) or through the REST API
 
@@ -671,7 +658,7 @@ Using the 'auto' mode in the TEF1 of the ARISE project, the initialization phase
    }
 
 Monitor Container behaviour
-----------------------------
+***************************
 
 Any activity regarding the container can be monitored looking at the logs. Each container is identified by an ID. To view docker testbed logs run:
 
@@ -682,7 +669,7 @@ Any activity regarding the container can be monitored looking at the logs. Each 
    docker logs <CONTAINER_ID>
 
 How to build the Docker Image
-------------------------------
+*****************************
 
 Docker Compose can be downloaded here `docker-compose.yaml <https://github.com/Engineering-Research-and-Development/arise-poc/blob/main/docker-compose.yaml>`_:
 
@@ -916,7 +903,7 @@ Modifying this file you can:
 .. _Example Query Dashboard:
 
 Example of how to build the query in the Grafana Dashboard
------------------------------------------------------------
+**********************************************************
 
 The data collected from the various OPCUA and ROS2 sources are managed by ORION-LD and historized in the timescale databases.
 Each database follows the same schema, consisting of four tables attributes, entities, spatial_ref_sys and subattributes.

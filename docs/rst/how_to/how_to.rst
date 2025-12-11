@@ -11,4 +11,4 @@ Additionally, this section delves into the various options and tools provided by
    :titlesonly:
    :maxdepth: 1
 
-   arise_poc
+   arise_poc/arise_poc
