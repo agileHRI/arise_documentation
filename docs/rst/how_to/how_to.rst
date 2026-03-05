@@ -12,3 +12,4 @@ Additionally, this section delves into the various options and tools provided by
    :maxdepth: 1
 
    arise_poc/arise_poc
+   vulcanexus_hri_tutorials
