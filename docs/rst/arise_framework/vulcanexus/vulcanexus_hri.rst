@@ -41,7 +41,7 @@ It originates from the `ROS4HRI <https://github.com/ros4hri>`_ initiative and ha
 
 One of the key innovations integrated into Vulcanexus ``hri_msgs`` is the use of **Fast DDS keyed topics**, a mechanism that introduces a unique identifier, or *key*, to each message instance.
 Keys enable multiple objects of the same logical kind to be published within a single topic, rather than requiring the creation of multiple topics for each individual object.
-For more information about keyed topics, please refer to the :ref:`topic_keys` section.
+For more information about keyed topics, please refer to the `Topic Keys <https://docs.vulcanexus.org/en/latest/rst/enhancements/keys/topic-keys.html#topic-keys>`_ Vulcanexus section.
 This design significantly reduces the number of middleware entities, minimizes discovery overhead, and optimizes bandwidth consumption.
 
 Within the HRI ecosystem, this feature proves particularly advantageous. For example:
@@ -52,7 +52,7 @@ Within the HRI ecosystem, this feature proves particularly advantageous. For exa
 By centralizing all HRI-related message definitions, ``hri_msgs`` simplifies development and ensures consistency across the various perception and interaction modules.
 The integration of Fast DDS keys allows nodes to manage multiple entities within a single stream, avoiding redundant topics, reducing computational load, and ensuring scalability for real-world applications where many humans may interact simultaneously with a robot.
 
-More information about the message definitions and the enhancements introduced in this package can be found in :ref:`enhancements_hri_msgs`.
+More information about the message definitions and the enhancements introduced in this package can be found in `Vulcanexus HRI Message Definitions <https://docs.vulcanexus.org/en/latest/rst/enhancements/hri_msgs/hri_msgs.html#enhancements-hri-msgs>`_.
 
 .. _vulcanexus_hri_face_detect:
 
@@ -198,7 +198,7 @@ The TTS package includes three different nodes which serve different purposes:
 - A TTS action server that receives text input and converts it to speech, publishing the generated audio as an Audio message on a ROS 2 topic.
 - A TTS subscriber node that listens to the audio topic and plays the received audio through a specified speaker.
 - Another version of the TTS action server that receives text input and converts it to speech, but storing the result in ``.wav`` file on the path specified.
-  This node is useful for offline processing or when the audio needs to be stored for later use, for example when using *presets* (check :ref:`tutorials_hri_tts_presets`).
+  This node is useful for offline processing or when the audio needs to be stored for later use, for example when using *presets* (check `Vulcanexus TTS Preset tutorial <https://docs.vulcanexus.org/en/latest/rst/tutorials/hri/tts.html#using-presets>`_).
 
 This package also includes utility scripts to download the required model or list the available audio output devices, to facilitate the initial setup.
 
@@ -231,7 +231,7 @@ It only requires to specify the audio output device to be used for playback, whi
 The TTS package also includes extra features to enhance its performance and usability, like the ability to use *presets* when generating the speech.
 Presets are already created audio files (stored locally) that can be directly played instead of generating the speech from scratch.
 This feature is useful when some audios need to be played repeatedly, as it avoids the need to generate the same audio multiple times, saving both time and computational resources.
-Check :ref:`tutorials_hri_tts_presets` for more information about this feature and how to implement it.
+Check `Vulcanexus TTS Preset tutorial <https://docs.vulcanexus.org/en/latest/rst/tutorials/hri/tts.html#using-presets>`_ for more information about this feature and how to implement it.
 
 This node is designed to work seamlessly with the TTS publisher, but it can also be used independently to play audio from other sources, as long as the audio is published as an Audio message on the ``/hri_tts/audio`` topic.
 
