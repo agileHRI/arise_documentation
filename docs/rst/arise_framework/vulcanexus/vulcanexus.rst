@@ -117,6 +117,19 @@ In ARISE, this integration enables robust OT/IT convergence:
 
 This closed-loop system architecture allows the creation of real-time digital twins, predictive maintenance scenarios, and cloud-assisted robotics workflows.
 
+Vulcanexus HRI
+--------------
+
+Vulcanexus provides a set of tools and libraries to facilitate the development of Human-Robot Interaction applications, leveraging the latest capabilities of Fast DDS to smooth the integration of HRI applications within the ROS 2 ecosystem.
+A more detailed explanation of the Vulcanexus HRI capabilities and how to use them can be found in the following section:
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   vulcanexus_hri
+
+
 Resources
 ---------
 
@@ -128,5 +141,3 @@ For more information, resources, and support regarding Vulcanexus, you can explo
 - DDS Enabler: https://github.com/eProsima/FIWARE-DDS-Enabler
 - Orion-LD: https://github.com/FIWARE/context.Orion-LD
 - ARISE Portal: https://arise-middleware.eu
-
-
