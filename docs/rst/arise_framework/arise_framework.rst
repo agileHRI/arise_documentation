@@ -14,7 +14,7 @@ Components
    :titlesonly:
    :maxdepth: 1
 
-   vulcanexus
+   vulcanexus/vulcanexus
    fiware_components
    ros4hri
    ssh_framework
