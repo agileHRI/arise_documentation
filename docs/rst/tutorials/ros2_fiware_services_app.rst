@@ -83,7 +83,7 @@ Here's a breakdown of the configuration file structure:
 This configuration ensures that requests written to the ``add_two_ints`` attribute of the
 ``urn:ngsi-ld:robot:1`` entity are translated into ROS 2 service calls to ``/add_two_ints``.
 
-To run the FIWARE Context Broker, create a ``docker-compose.yml`` file with the following content:
+To run the FIWARE Context Broker, create a ``docker-compose-srv.yml`` file with the following content:
 
 .. code-block:: yaml
 
@@ -126,7 +126,7 @@ Start the services with the following command:
 
 .. code-block:: bash
 
-    docker compose up -d
+    docker compose -f docker-compose-srv.yml up -d
 
 .. note::
 
@@ -137,7 +137,7 @@ Start the services with the following command:
 
     .. code-block:: bash
 
-        docker-compose up -d
+        docker-compose -f docker-compose-srv.yml up -d
 
 This command downloads the required images and starts the containers in detached mode.
 
@@ -147,7 +147,7 @@ This command downloads the required images and starts the containers in detached
 
     .. code-block:: bash
 
-        docker compose up
+        docker compose -f docker-compose-srv.yml up
 
 .. note::
 
@@ -155,7 +155,7 @@ This command downloads the required images and starts the containers in detached
 
     .. code-block:: bash
 
-        docker compose down
+        docker compose -f docker-compose-srv.yml down
 
 Running the ROS 2 Service Server
 --------------------------------
@@ -230,8 +230,8 @@ add:
 
     curl http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1/attrs/add_two_ints \
       -X PATCH \
-      -d " $payload" \
-      -H 'Content-Type: application/ld+json' \
+      -d "$payload" \
+      -H 'Content-Type: application/json'
 
 In this example:
 
@@ -259,15 +259,44 @@ After the service call has been processed, query the NGSI-LD entity to inspect t
       -s -S \
       -H 'Accept: application/json' | jq
 
-The response should contain the ``add_two_ints`` attribute. Depending on the Orion-LD DDS bridge version,
-the service response may be stored together with the request value or in a response-related field under the
-same mapped attribute.
+The response should contain the ``add_two_ints`` attribute.
+The attribute contains several fields:
+
+.. code-block:: text
+
+    {
+      "id": "urn:ngsi-ld:robot:1",
+      "type": "Robot",
+
+      "add_two_ints": {
+        "type": "Property",
+        "value": {
+          "a": 10,
+          "b": 32
+        },
+        "request": {...},
+        "reply": {...}
+      },
+      "ddsType": {
+        "type": "Property",
+        "value": "fastdds"
+      }
+    }
+
+The ``value`` field contains the service request with the two integers to add.
+The ``request`` and ``reply`` sub-attributes contain several metadata fields related to the DDS entities.
+We are interested in the value field of the ``reply`` attribute, which contains the service response with the computed sum.
 
 For this example, the expected service result is:
 
 .. code-block:: text
 
-    42
+    "reply": {
+      "type": "Property",
+      "value": {
+        "sum": 42
+      },
+
 
 You can continuously monitor the entity while sending service requests with:
 
@@ -276,7 +305,7 @@ You can continuously monitor the entity while sending service requests with:
     while true; do
         curl "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?prettyPrint=yes&local=true" \
           -s -S \
-          -H 'Accept: application/json' | jq '.add_two_ints'
+          -H 'Accept: application/json' | jq
         sleep 1
     done
 
@@ -289,12 +318,6 @@ If the service call does not reach the ROS 2 service server, check the following
 - Make sure Orion-LD and the ROS 2 container are using the same DDS domain.
 - Make sure both containers are using ``--net=host`` or ``network_mode: host``.
 - Make sure the service name in the configuration file is ``add_two_ints``.
-- Make sure the configured NGSI-LD attribute is ``add_two_ints``.
-- Check the Orion-LD logs with:
-
-  .. code-block:: bash
-
-      docker compose logs -f orion
 
 - Check that ROS 2 can see the service with:
 
@@ -306,8 +329,8 @@ If the service call does not reach the ROS 2 service server, check the following
 Conclusion
 ----------
 
-In this tutorial, we demonstrated how to call a ROS 2 service from the FIWARE Context Broker. Orion-LD was
-configured as a ROS 2 service client through a DDS-to-NGSI-LD service mapping, and a ROS 2
+In this tutorial, we demonstrated how to call a ROS 2 service from the FIWARE Context Broker.
+Orion-LD was configured as a ROS 2 service client through a DDS-to-NGSI-LD service mapping, and a ROS 2
 ``add_two_ints`` service server was launched in a Vulcanexus container.
 
 By following these steps, you were able to:
