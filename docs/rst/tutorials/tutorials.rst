@@ -9,6 +9,8 @@ For first-time users, it is highly recommended to follow the tutorials in sequen
 While these tutorials aim to provide hands-on experience, they are not intended to replace comprehensive documentation but rather to complement it by offering focused, task-oriented guidance.
 By following these tutorials, you will gain practical insights and a deeper understanding of how to effectively utilize the ARISE framework in real-world scenarios.
 
-.. warning::
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
 
-    This section is a work in progress. Tutorials will be added soon.
+   ros2_fiware_services_app
