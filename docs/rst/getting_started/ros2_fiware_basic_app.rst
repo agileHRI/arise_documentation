@@ -91,7 +91,7 @@ Create a `docker-compose.yml` file with the following content:
             - mongo_data:/data/db
 
     orion:
-            image: fiware/orion-ld:1.10.0-PRE-1711
+            image: fiware/orion-ld:1.13.0-PRE-1835
             privileged: true
             ipc: host
             network_mode: host
@@ -269,5 +269,3 @@ In this tutorial, we demonstrated how to establish seamless communication betwee
 This bidirectional communication enables powerful integrations between robotics systems and smart city platforms, allowing for real-time data exchange and enhanced interoperability. The use of Docker ensures a portable and reproducible setup, making it easier to deploy and scale the solution.
 
 Feel free to expand on this setup by adding more DDS Topics and NGSI-LD entities to the configuration file, or by integrating additional ROS 2 nodes and FIWARE components to suit your specific use case.
-
-
