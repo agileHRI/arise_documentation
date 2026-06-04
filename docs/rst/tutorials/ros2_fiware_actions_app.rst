@@ -10,13 +10,13 @@ This tutorial demonstrates how to call a ROS 2 action from the FIWARE Context Br
 In this example, Orion-LD acts as a client for a ROS 2 action, while a ROS 2 action server provides the ``fibonacci`` action.
 
 ROS 2 actions work differently from ROS 2 services.
-A service is a single request/response exchange, while an action is a long-running task that provides **feedback** while it is executing and a final **result** when it completes.
+A service is a single request/response exchange, while an action is a long-running task that provides **feedback** during execution and a final **result** when it completes.
 Because of this, the integration behaves differently:
 
 - When you write a goal to the action attribute, Orion-LD sends a goal request to the ROS 2 action server.
-- While the goal is being processed, Orion-LD updates the action attribute of the entity with the goal's **status** (``accepted``, ``executing``, ``succeeded`` …) and the latest **feedback**. Each goal is tracked under its own ``datasetId``, which corresponds to the ROS 2 **goalId**.
+- While the goal is being processed, Orion-LD updates the action attribute of the entity with the goal's **status** (``accepted``, ``executing``, ``succeeded`` …) and the latest **feedback**. Each goal is tracked under its own ``datasetId``, which corresponds to the ROS 2 ``goalId``.
 - Once the goal finishes, Orion-LD **removes the goal-specific data from the current state** of the entity. Only the value you wrote (the goal request) remains in the live entity.
-- The complete history of the goal (every feedback update and every status transition) is preserved in the temporal database (TRoE/PostgreSQL) and can be retrieved at any time using the goal's ``datasetId`` (the goalId).
+- The complete history of the goal (every feedback update and every status transition) is preserved in the temporal database (TRoE/PostgreSQL) and can be retrieved at any time using the goal's ``datasetId`` (the ``goalId``).
 
 Optionally, you can attach an HTTP ``endpoint`` to the goal so that Orion-LD pushes the live feedback and status updates to you as NGSI-LD notifications, which is convenient for following a goal in real time.
 
@@ -26,7 +26,7 @@ By the end of this tutorial, you will be able to:
 - Start a ROS 2 action server that computes a Fibonacci sequence.
 - Trigger a ROS 2 action goal from the Context Broker through the NGSI-LD REST API.
 - Follow the goal's feedback and status live through an HTTP notification endpoint.
-- Retrieve the full historical data of the goal from the temporal database using its goalId.
+- Retrieve the full historical data of the goal from the temporal database using its ``goalId``.
 
 We will use Docker Compose to run Orion-LD, MongoDB and TimescaleDB, and a Vulcanexus Docker container to run the ROS 2 action server.
 
@@ -359,7 +359,7 @@ Observing the Live Feedback and Status
 
 While the goal is executing, the notification listener will print a sequence of notifications.
 Each one is an NGSI-LD ``Notification`` whose ``data`` array contains the entity with the ``fibonacci`` attribute.
-The goal is identified by its ``datasetId`` (the goalId), and carries three relevant sub-properties:
+The goal is identified by its ``datasetId`` (the ``goalId``), and carries three relevant sub-properties:
 
 - ``ddsActionStatus``: the current status of the goal (``accepted``, ``executing``, ``succeeded`` …).
 - ``ddsActionFeedback``: the latest feedback published by the action server (the partial sequence).
@@ -421,7 +421,7 @@ Over the life of the goal you will see the status transition through ``accepted`
 .. note::
 
     Take note of the ``datasetId`` value (for example ``urn:goal:9a387aad-8264-7baa-aeb8-dad745cb1c45``).
-    This is the **goalId** and you will use it to retrieve the goal's history.
+    This is the ``goalId`` and you will use it to retrieve the goal's history.
 
 Querying the Current State
 ---------------------------
@@ -456,26 +456,26 @@ The full record of the goal lives in the temporal database.
 Querying the Historical Data of a Goal
 --------------------------------------
 
-The complete history of the goal — every feedback update, every status transition and the final result — is stored in the temporal database (TRoE).
-Retrieve it through the NGSI-LD temporal API, filtering by the ``fibonacci`` attribute and the ``datasetId`` (the goalId you noted earlier).
+The complete history of the goal (every feedback update, every status transition and the final result) is stored in the temporal database (TRoE).
+Retrieve it through the NGSI-LD temporal API, filtering by the ``fibonacci`` attribute and the ``datasetId`` (the ``goalId`` you noted earlier).
 
 We show two ways of retrieving it: the full JSON representation, and a compact summary built with ``jq``.
 
 Option 1: full JSON representation
 """"""""""""""""""""""""""""""""""
 
-The following request returns the complete temporal representation, pretty-printed as JSON:
+Adapt the following request to your specific example by setting the ``datasetId`` to return the complete temporal representation, pretty-printed as JSON:
 
 .. code-block:: bash
 
     curl -G "http://localhost:1026/ngsi-ld/v1/temporal/entities/urn:ngsi-ld:robot:1" \
       -H 'Accept: application/json' \
       --data-urlencode 'attrs=fibonacci' \
-      --data-urlencode 'datasetId=urn:goal:9a387aad-8264-7baa-aeb8-dad745cb1c45' \
+      --data-urlencode 'datasetId=<INTRODUCE_YOUR_DATA_SET_ID>' \
       --data-urlencode 'prettyPrint=yes'
 
 The response returns the ``fibonacci`` attribute as an **array of timed instances**.
-Each instance carries one of the action sub-properties — ``ddsActionStatus`` (a status transition), ``ddsActionFeedback`` (a growing sequence) or ``ddsActionResult`` (the final sequence) — reconstructing the complete timeline of the goal:
+Each instance carries one of the action sub-properties (``ddsActionStatus`` (a status transition), ``ddsActionFeedback`` (a growing sequence) or ``ddsActionResult`` (the final sequence)) reconstructing the complete timeline of the goal:
 
 .. code-block:: json
 
@@ -519,14 +519,14 @@ Option 2: compact summary with jq
 """""""""""""""""""""""""""""""""
 
 If you only care about the values, pipe the response through ``jq`` to print one concise line per instance.
-Drop the ``prettyPrint=yes`` parameter and format the output instead:
+Drop the ``prettyPrint=yes`` parameter and format the output instead. Remember to adapt the command by setting the ``datasetId`` of the action you want to inspect.
 
 .. code-block:: bash
 
     curl -s -G "http://localhost:1026/ngsi-ld/v1/temporal/entities/urn:ngsi-ld:robot:1" \
       -H 'Accept: application/json' \
       --data-urlencode 'attrs=fibonacci' \
-      --data-urlencode 'datasetId=urn:goal:9a387aad-8264-7baa-aeb8-dad745cb1c45' \
+      --data-urlencode 'datasetId=<INTRODUCE_YOUR_DATA_SET_ID>' \
       | jq -r '.fibonacci | reverse[] |
           if   .ddsActionFeedback then "ddsActionFeedback:  [" + ([.ddsActionFeedback.value.sequence[]|tostring]|join(", ")) + "]"
           elif .ddsActionResult   then "ddsActionResult:  ["   + ([.ddsActionResult.value.result.sequence[]|tostring]|join(", ")) + "]"
@@ -550,7 +550,7 @@ The result is the goal's timeline in a compact, readable form:
 
 .. note::
 
-    Because the goalId is part of the URI, use ``-G`` together with ``--data-urlencode`` so that curl encodes the parameters correctly.
+    Because the ``goalId`` is part of the URI, use ``-G`` together with ``--data-urlencode`` so that curl encodes the parameters correctly.
 
     You can also limit the number of instances returned per attribute with ``--data-urlencode 'lastN=20'``.
 
@@ -563,7 +563,7 @@ Inspecting PostgreSQL Directly (Optional)
 -----------------------------------------
 
 If you want to look at the raw temporal data, you can connect to the TimescaleDB container.
-The list of goalIds recorded for the ``fibonacci`` attribute can be obtained with:
+The list of ``goalId``s recorded for the ``fibonacci`` attribute can be obtained with:
 
 .. code-block:: bash
 
@@ -617,6 +617,6 @@ By following these steps, you were able to:
 - Send an action goal through the NGSI-LD REST API.
 - Follow the goal's feedback and status live through an HTTP notification endpoint.
 - Observe how the goal data is removed from the current state once the goal completes.
-- Retrieve the full history of the goal from the temporal database using its goalId.
+- Retrieve the full history of the goal from the temporal database using its ``goalId``.
 
 You can extend this example by adding more ROS 2 actions to the ``actions`` section of the ``context_broker_action_config.json`` file and mapping each one to a different NGSI-LD entity attribute.
