@@ -15,7 +15,7 @@ Because of this, the integration behaves differently:
 
 - When you write a goal to the action attribute, Orion-LD sends a goal request to the ROS 2 action server.
 - While the goal is being processed, Orion-LD updates the action attribute of the entity with the goal's **status** (``accepted``, ``executing``, ``succeeded`` …) and the latest **feedback**. Each goal is tracked under its own ``datasetId``, which corresponds to the ROS 2 ``goalId``.
-- Once the goal finishes, Orion-LD **removes the goal-specific data from the current state** of the entity. Only the value you wrote (the goal request) remains in the live entity.
+- Once the goal finishes, Orion-LD **removes the action attribute from the current state** of the entity entirely. Querying that attribute on the live entity then returns a ``ResourceNotFound`` error.
 - The complete history of the goal (every feedback update and every status transition) is preserved in the temporal database (TRoE/PostgreSQL) and can be retrieved at any time using the goal's ``datasetId`` (the ``goalId``).
 
 Optionally, you can attach an HTTP ``endpoint`` to the goal so that Orion-LD pushes the live feedback and status updates to you as NGSI-LD notifications, which is convenient for following a goal in real time.
@@ -436,21 +436,18 @@ While the goal is executing, you can also query the live entity to see the goal 
 
 During execution, the ``fibonacci`` attribute is returned as an array of datasets: the goal request you wrote and the active goal with its ``ddsActionStatus`` and ``ddsActionFeedback``.
 
-Once the goal **finishes**, Orion-LD removes the goal-specific data from the current state.
-Querying the entity again returns only the value you wrote:
+Once the goal **finishes**, Orion-LD removes the ``fibonacci`` attribute from the current state of the entity entirely.
+Querying that attribute again therefore returns a ``ResourceNotFound`` error:
 
-.. code-block:: text
+.. code-block:: json
 
     {
-      "type": "Property",
-      "value": { "order": 5 },
-      "endpoint": {
-        "type": "Property",
-        "value": "http://localhost:7000/notify"
-      }
+      "type": "https://uri.etsi.org/ngsi-ld/errors/ResourceNotFound",
+      "title": "Combination Entity/Attributes Not Found",
+      "detail": "urn:ngsi-ld:robot:1"
     }
 
-This is expected: the live entity always reflects the *current* state, and a completed goal is no longer active.
+This is expected: the live entity only reflects the *current* state, and a completed goal is no longer active.
 The full record of the goal lives in the temporal database.
 
 Querying the Historical Data of a Goal
