@@ -125,7 +125,7 @@ To run the FIWARE Context Broker, create a ``docker-compose-action.yml`` file wi
           - mongo_data:/data/db
 
       orion:
-        image: fiware/orion-ld:1.13.0-PRE-1835
+        image: fiware/orion-ld:1.13.0-PRE-1852
         privileged: true
         ipc: host
         network_mode: host
@@ -196,6 +196,28 @@ This command downloads the required images and starts the containers in detached
     .. code-block:: bash
 
         docker compose -f docker-compose-action.yml down
+
+.. note::
+
+    The previous command keeps the data volumes, so MongoDB and TimescaleDB
+    retain their data across restarts. To also delete the database volumes and
+    start completely fresh (wiping both the current state and the temporal
+    history), add the ``-v`` flag:
+
+    .. code-block:: bash
+
+        docker compose -f docker-compose-action.yml down -v
+
+    This is irreversible: it removes the ``mongo_data`` and ``timescale-db``
+    volumes and all the data they contain.
+
+    If the containers were already stopped with a plain ``down`` (without
+    ``-v``), you can remove the volumes afterwards with ``docker volume rm``.
+
+    .. code-block:: bash
+
+        docker volume ls
+        docker volume rm <project>_mongo_data <project>_timescale-db
 
 Running the ROS 2 Action Server
 -------------------------------
@@ -320,9 +342,8 @@ Include the ``endpoint`` sub-property so that Orion-LD pushes the live updates t
       -H "Content-Type: application/json" \
       -d '{
             "fibonacci": {
-              "type": "Property",
               "value": { "order": 5 },
-              "endpoint": { "type": "Property", "value": "http://localhost:7000/notify" }
+              "endpoint": { "value": "http://localhost:7000/notify" }
             }
           }'
 
@@ -338,10 +359,11 @@ Observing the Live Feedback and Status
 
 While the goal is executing, the notification listener will print a sequence of notifications.
 Each one is an NGSI-LD ``Notification`` whose ``data`` array contains the entity with the ``fibonacci`` attribute.
-The goal is identified by its ``datasetId`` (the goalId), and carries two relevant sub-properties:
+The goal is identified by its ``datasetId`` (the goalId), and carries three relevant sub-properties:
 
 - ``ddsActionStatus``: the current status of the goal (``accepted``, ``executing``, ``succeeded`` …).
 - ``ddsActionFeedback``: the latest feedback published by the action server (the partial sequence).
+- ``ddsActionResult``: the final result returned by the action server when the goal completes (the full sequence).
 
 A feedback notification looks like this:
 
@@ -382,7 +404,19 @@ And a status notification looks like this:
       }
     }
 
-Over the life of the goal you will see the status transition through ``accepted`` → ``executing`` → ``succeeded``, and the feedback grow from ``[0, 1]`` up to the complete sequence ``[0, 1, 1, 2, 3]``.
+When the goal completes, a final notification carries the ``ddsActionResult`` with the full sequence:
+
+.. code-block:: text
+
+    "ddsActionResult": {
+      "type": "Property",
+      "value": {
+        "result": { "sequence": [ 0, 1, 1, 2, 3, 5 ] },
+        "status": 4
+      }
+    }
+
+Over the life of the goal you will see the status transition through ``accepted`` → ``executing`` → ``succeeded``, the feedback grow from ``[0, 1]`` up to the complete sequence ``[0, 1, 1, 2, 3, 5]``, and a final ``ddsActionResult`` carrying that same sequence.
 
 .. note::
 
@@ -422,8 +456,15 @@ The full record of the goal lives in the temporal database.
 Querying the Historical Data of a Goal
 --------------------------------------
 
-The complete history of the goal — every feedback update and every status transition — is stored in the temporal database (TRoE).
-Retrieve it through the NGSI-LD temporal API, filtering by the ``fibonacci`` attribute and the ``datasetId`` (the goalId you noted earlier):
+The complete history of the goal — every feedback update, every status transition and the final result — is stored in the temporal database (TRoE).
+Retrieve it through the NGSI-LD temporal API, filtering by the ``fibonacci`` attribute and the ``datasetId`` (the goalId you noted earlier).
+
+We show two ways of retrieving it: the full JSON representation, and a compact summary built with ``jq``.
+
+Option 1: full JSON representation
+""""""""""""""""""""""""""""""""""
+
+The following request returns the complete temporal representation, pretty-printed as JSON:
 
 .. code-block:: bash
 
@@ -434,17 +475,78 @@ Retrieve it through the NGSI-LD temporal API, filtering by the ``fibonacci`` att
       --data-urlencode 'prettyPrint=yes'
 
 The response returns the ``fibonacci`` attribute as an **array of timed instances**.
-Some instances carry a ``ddsActionFeedback`` (the growing sequence) and others carry a ``ddsActionStatus`` (the status transitions), reconstructing the complete timeline of the goal:
+Each instance carries one of the action sub-properties — ``ddsActionStatus`` (a status transition), ``ddsActionFeedback`` (a growing sequence) or ``ddsActionResult`` (the final sequence) — reconstructing the complete timeline of the goal:
+
+.. code-block:: json
+
+    [
+      {
+        "id": "urn:ngsi-ld:robot:1",
+        "type": "Robot",
+        "fibonacci": [
+          {
+            "type": "Property",
+            "value": { "order": 5 },
+            "datasetId": "urn:goal:9a387aad-8264-7baa-aeb8-dad745cb1c45",
+            "ddsActionStatus": {
+              "type": "Property",
+              "value": { "code": "accepted", "message": "Action goal accepted" }
+            }
+          },
+          {
+            "type": "Property",
+            "value": { "order": 5 },
+            "datasetId": "urn:goal:9a387aad-8264-7baa-aeb8-dad745cb1c45",
+            "ddsActionFeedback": {
+              "type": "Property",
+              "value": { "sequence": [ 0, 1, 1 ] }
+            }
+          },
+          {
+            "type": "Property",
+            "value": { "order": 5 },
+            "datasetId": "urn:goal:9a387aad-8264-7baa-aeb8-dad745cb1c45",
+            "ddsActionResult": {
+              "type": "Property",
+              "value": { "result": { "sequence": [ 0, 1, 1, 2, 3, 5 ] }, "status": 4 }
+            }
+          }
+        ]
+      }
+    ]
+
+Option 2: compact summary with jq
+"""""""""""""""""""""""""""""""""
+
+If you only care about the values, pipe the response through ``jq`` to print one concise line per instance.
+Drop the ``prettyPrint=yes`` parameter and format the output instead:
+
+.. code-block:: bash
+
+    curl -s -G "http://localhost:1026/ngsi-ld/v1/temporal/entities/urn:ngsi-ld:robot:1" \
+      -H 'Accept: application/json' \
+      --data-urlencode 'attrs=fibonacci' \
+      --data-urlencode 'datasetId=urn:goal:9a387aad-8264-7baa-aeb8-dad745cb1c45' \
+      | jq -r '.fibonacci | reverse[] |
+          if   .ddsActionFeedback then "ddsActionFeedback:  [" + ([.ddsActionFeedback.value.sequence[]|tostring]|join(", ")) + "]"
+          elif .ddsActionResult   then "ddsActionResult:  ["   + ([.ddsActionResult.value.result.sequence[]|tostring]|join(", ")) + "]"
+          elif .ddsActionStatus   then "ddsActionStatus: "     + .ddsActionStatus.value.code
+          else empty end'
+
+The ``jq`` filter inspects each instance, detects which action sub-property it carries
+(``ddsActionFeedback``, ``ddsActionResult`` or ``ddsActionStatus``) and prints a single line for it.
+The result is the goal's timeline in a compact, readable form:
 
 .. code-block:: text
 
-    feedback  [0, 1, 1]
-    feedback  [0, 1, 1, 2]
-    feedback  [0, 1, 1, 2, 3]
-    feedback  [0, 1, 1, 2, 3, 5]
-    status    accepted
-    status    executing
-    status    succeeded
+    ddsActionStatus: accepted
+    ddsActionFeedback:  [0, 1, 1]
+    ddsActionFeedback:  [0, 1, 1, 2]
+    ddsActionFeedback:  [0, 1, 1, 2, 3]
+    ddsActionStatus: executing
+    ddsActionFeedback:  [0, 1, 1, 2, 3, 5]
+    ddsActionStatus: succeeded
+    ddsActionResult:  [0, 1, 1, 2, 3, 5]
 
 .. note::
 
