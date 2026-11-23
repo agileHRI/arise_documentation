@@ -11,5 +11,7 @@ Additionally, this section delves into the various options and tools provided by
    :titlesonly:
    :maxdepth: 1
 
+   coraine
+   arise_poc_coraine/arise_poc_coraine
    arise_poc/arise_poc
    vulcanexus_hri_tutorials
