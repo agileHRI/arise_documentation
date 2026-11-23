@@ -1,31 +1,40 @@
 .. _ros2_fiware_basic_app:
 
-Communicating ROS 2 and FIWARE Context Broker
-=============================================
+Communicating ROS 2 and the coraine Context Broker
+==================================================
 
 Introduction
 ------------
-This tutorial demonstrates how to establish communication between ROS 2 and the FIWARE Context Broker using Docker containers. By the end of this tutorial, you will be able to:
+This tutorial shows how to connect ROS 2 and the ARISE context broker, `coraine <https://github.com/SEAMWARE/coraine>`__, using Docker containers.
+coraine is an NGSI-LD context broker. Its DDS bridge maps ROS 2 topics, services and actions to NGSI-LD entity attributes.
+By the end of this tutorial, you will be able to:
 
-- Publish data from ROS 2 to the FIWARE Context Broker.
-- Inject data into the FIWARE Context Broker and have it published in ROS 2.
+- Publish data from ROS 2 to the context broker.
+- Inject data into the context broker and have it published in ROS 2.
 
-We will use Docker Compose to run the FIWARE Context Broker, and a Vulcanexus Docker container to run the ROS 2 application.
-This setup ensures that no prior installations are required beyond Docker and Docker Compose.
+We will use Docker Compose to run coraine, and a Vulcanexus Docker container to run the ROS 2 application.
+You do not need to install anything beyond the tools listed below.
 
 Prerequisites
 -------------
-- Docker installed on your system.
-- Docker Compose installed on your system.
+- Docker installed on your system (Linux, ``amd64``).
+- Docker Compose v2 installed on your system.
+- ``curl`` and ``jq`` installed on your host.
 
-Running the FIWARE Context Broker
----------------------------------
+.. note::
 
-The Context Broker requires a simple configuration file to establish a mapping between DDS Topics and NGSI-LD entity attributes.
-This configuration file acts as a bridge, ensuring that data published on specific DDS Topics is correctly associated with the corresponding attributes of NGSI-LD entities.
-By defining this mapping in the configuration file, the Context Broker facilitates bidirectional translation and synchronization of data between DDS (Data Distribution Service) and NGSI-LD.
+    The coraine image for ``arm64`` is built without the DDS bridge.
+    To follow this tutorial, use an ``amd64`` machine.
 
-Create a file named `context_broker_config.json` with the following content:
+Running the Context Broker
+--------------------------
+
+The context broker needs a simple configuration file. The file maps DDS Topics to NGSI-LD entity attributes.
+Data published on a mapped DDS Topic is stored in the matching attribute of an NGSI-LD entity.
+Data written to that attribute is published back on the DDS Topic.
+The mapping therefore works in both directions.
+
+Create a file named ``context_broker_config.json`` with the following content:
 
 .. code-block:: json
 
@@ -51,8 +60,9 @@ Create a file named `context_broker_config.json` with the following content:
 
 Here's a breakdown of the configuration file structure:
 
-- ``dds``: This section contains the configuration for the DDS transport layer.
-  In this case, it specifies the domain ID and transport type (e.g., UDP) used for communication.
+- ``ddsmodule``: This section contains the configuration for the DDS transport layer.
+  In this case, it sets the domain ID and the transport type (UDP).
+  The domain must match the ``ROS_DOMAIN_ID`` of your ROS 2 nodes (``0`` by default).
 
 - ``ngsild``: This section defines the mapping between DDS Topics and NGSI-LD entities.
   Each topic is associated with:
@@ -61,101 +71,102 @@ Here's a breakdown of the configuration file structure:
   - ``entityId``: The unique identifier for the NGSI-LD entity (e.g., ``urn:ngsi-ld:robot:1``).
   - ``attribute``: The attribute of the NGSI-LD entity that corresponds to the DDS Topic (e.g., ``chatter``).
 
-This configuration ensures that data published on the ``rt/chatter`` DDS Topic in ROS 2 is mapped to the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity in the FIWARE Context Broker. Similarly, data injected into the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity in the Context Broker is published back to the ``rt/chatter`` DDS Topic in ROS 2.
+With this configuration, data published on the ``rt/chatter`` DDS Topic in ROS 2 is stored in the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity.
+Data written to that attribute is published back on the ``rt/chatter`` DDS Topic in ROS 2.
 
-It is important to note that any data published to a DDS Topic that is not explicitly defined in the `context_broker_config.json` file will be automatically saved in a default NGSI-LD entity.
-This entity is identified by the unique identifier ``urn:ngsi-ld:dds:default``.
+.. note::
 
-For example:
+    ROS 2 adds the prefix ``rt/`` to topic names on the DDS layer. The ROS 2 topic ``/chatter`` is the DDS Topic ``rt/chatter``.
 
-- If a message is published to a topic named ``/unknown_topic`` that is not mapped in the configuration file, the data will be stored in the ``urn:ngsi-ld:dds:default`` entity.
-- The attribute name for such data will match the DDS Topic name (e.g., ``unknown_topic``).
+Topics that are not in the configuration file are not lost.
+coraine stores them in a default NGSI-LD entity, ``urn:ngsi-ld:dds:default``, with one attribute per topic.
+This is a quick way to see what is on the ROS 2 network. For real deployments, map every topic you need in the configuration file.
 
-This behavior ensures that no data is lost, even if the topic is not explicitly defined in advance.
-However, for better organization and clarity, it is recommended to define all expected topics in the configuration file whenever possible.
-
-To run the FIWARE Context Broker, we will use Docker Compose.
-Create a `docker-compose.yml` file with the following content:
+To run the context broker, we will use Docker Compose.
+Create a ``docker-compose.yml`` file with the following content:
 
 .. code-block:: yaml
 
     services:
 
-        mongodb:
-            image: mongo:7.0
-            privileged: true
-            ipc: host
-            network_mode: host
-            command: --bind_ip_all
-            volumes:
-            - mongo_data:/data/db
-
-    orion:
-            image: fiware/orion-ld:1.13.0-PRE-1835
-            privileged: true
-            ipc: host
-            network_mode: host
-            depends_on:
-                - mongodb
-            restart: always
-            command: -dbhost localhost -wip dds -mongocOnly
-            environment:
-                - ORIONLD_MONGO_HOST=localhost
-            volumes:
-                - ./context_broker_config.json:/root/.orionld
-            healthcheck:
-                test: curl --fail -s http://localhost:1026/version || exit 1
-                interval: 30s
-                retries: 15
+      coraine:
+        image: quay.io/seamware/coraine:0.7.0
+        network_mode: host
+        ipc: host
+        restart: unless-stopped
+        command:
+          - --database
+          - corDB
+          - --dbDir
+          - /data
+          - --apiPlugins
+          - admin
+          - --bridges
+          - dds
+          - --bridgeConfig
+          - /opt/seamware/etc/dds.json
+        volumes:
+          - ./context_broker_config.json:/opt/seamware/etc/dds.json:ro
+          - coraine_data:/data
+          - dds_types:/opt/seamware/etc/dds-types
 
     volumes:
-        mongo_data:
+      coraine_data:
+      dds_types:
 
+This configuration starts coraine with:
 
-This configuration will set up FIWARE Context Broker and MongoDB, the database used by the Context Broker to save its current state. To start the services, run the following command:
+- ``--database corDB``: coraine's built-in database. No external database is needed. ``--dbDir /data`` keeps the data in the ``coraine_data`` volume.
+- ``--bridges dds`` and ``--bridgeConfig``: loads the DDS bridge with your mapping file.
+- ``--apiPlugins admin``: enables the admin API, used later to list what is on the ROS 2 network.
+- ``network_mode: host`` and ``ipc: host``: let the broker discover ROS 2 nodes on the same machine. Fast DDS uses shared memory between processes on the same host, so ``ipc: host`` is required.
+
+.. note::
+
+    coraine images have no ``latest`` tag. This tutorial pins ``0.7.0``.
+    You can pick a newer tag from `quay.io/seamware/coraine <https://quay.io/repository/seamware/coraine>`__.
+
+To start the broker, run the following command:
 
 .. code-block:: bash
 
     docker compose up -d
 
+This command will download the image and start the container in detached mode.
+
+Check that the broker is running:
+
+.. code-block:: bash
+
+    curl -s http://localhost:1026/version | jq
+
+The mapped entity exists from startup. Its attribute has the value ``"uninitialized"`` until the first ROS 2 message arrives:
+
+.. code-block:: bash
+
+    curl -s "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?local=true" | jq
+
 .. note::
 
-    This tutorial utilizes Docker Compose to manage containerized applications.
-    It assumes that Docker Compose v2 (which is integrated with the Docker CLI) is installed on your system, so the `docker compose` command is used instead of the older `docker-compose` command.
-
-    If the previous command did not work, try using the following command instead:
+    If something goes wrong during the setup, check the broker logs:
 
     .. code-block:: bash
 
-        docker-compose up -d
-
-This command will download the necessary images and start the containers in detached mode.
+      docker compose logs -f coraine
 
 .. note::
 
-    If something goes wrong during the setup, you can run the previous command without the detached mode to see the logs coming from the Context Broker:
-
-    .. code-block:: bash
-
-      docker compose up
-
-    This will display the logs in real time, helping you identify any issues.
-
-.. note::
-
-    To stop and remove the running containers, you can use the following command:
+    To stop and remove the running containers, use the following command:
 
     .. code-block:: bash
 
       docker compose down
 
-    This will clean up the environment by stopping and removing all containers defined in the `docker-compose.yml` file.
-
 Running the ROS 2 Publisher
 ---------------------------
 
 To run the ROS 2 publication node, we will use a Vulcanexus Docker container.
-Pull the latest Vulcanexus image with the following command:
+Pull the Vulcanexus Jazzy image with the following command:
 
 .. code-block:: bash
 
@@ -165,107 +176,102 @@ Create and run a new container with the following command:
 
 .. code-block:: bash
 
-    docker run -it --rm --net=host --ipc=host --privileged \
-      -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+    docker run -it --rm --net=host --ipc=host \
       eprosima/vulcanexus:jazzy-desktop
 
-This command will run the Vulcanexus container and connect it to the host network, allowing it to communicate with the FIWARE Context Broker.
+This command runs the Vulcanexus container on the host network and the host IPC namespace, so it can reach the context broker.
 
-To start publishing data, you can use the `talker` node provided by the `demo_nodes_cpp` package.
-This node is a simple example that publishes string messages to a topic named ``rt/chatter``.
+To start publishing data, you can use the ``talker`` node provided by the ``demo_nodes_cpp`` package.
+It publishes messages such as "Hello World: [count]" to the ``/chatter`` topic (``rt/chatter`` on DDS), where ``[count]`` is an incrementing number.
 
-The `talker` node demonstrates the basic functionality of a ROS 2 publisher.
-It continuously publishes messages such as "Hello World: [count]" to the ``rt/chatter`` topic, where ``[count]`` is an incrementing number.
-
-To run the `talker` node inside the Vulcanexus container, execute the following command:
+To run the ``talker`` node inside the Vulcanexus container, execute the following command:
 
 .. code-block:: bash
 
   ros2 run demo_nodes_cpp talker
 
-This command will start the `talker` node, and you should see output indicating that messages are being published to the ``rt/chatter`` topic.
-These messages can then be consumed by the FIWARE Context Broker if the appropriate mapping is configured in the `context_broker_config.json` file.
+You should see output indicating that messages are being published.
+The context broker receives them because ``rt/chatter`` is mapped in ``context_broker_config.json``.
 
 Querying the Context Broker via REST API
 ----------------------------------------
 
-At this stage, the FIWARE Context Broker is actively receiving data published in the ROS 2 environment and storing it in the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity.
-To verify and access this data, you can query the Context Broker using the ``curl`` command.
+At this stage, the context broker is receiving the data published in ROS 2 and storing it in the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity.
+To check this data, query the context broker with ``curl``.
 
-The ``curl`` command sends a ``GET`` request to the Context Broker to retrieve the current value of the ``chatter`` attribute.
-To continuously monitor the data, you can execute this query in a loop, fetching a new value every second.
-Below is an example of how to achieve this:
+The following loop sends a ``GET`` request every second and prints the current value of the ``chatter`` attribute:
 
 .. code-block:: bash
 
     while true; do
-        curl "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?prettyPrint=yes&local=true" -s -S -H 'Accept: application/json' | jq -r '.chatter.value.data'
+        curl "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?local=true" -s -S -H 'Accept: application/json' | jq -r '.chatter.value.data'
         sleep 1
     done
 
 In this example:
 
-- The ``curl`` command sends a request to the Context Broker's endpoint, specifying the entity ID (``urn:ngsi-ld:robot:1``) and the attribute (``chatter``) to retrieve.
-- The ``-H 'Accept: application/json'`` header ensures the response is returned in JSON format.
-- The ``jq`` tool is used to format and display the JSON response in a readable manner.
-- The ``sleep 1`` command introduces a one-second delay between each query, allowing you to observe the data updates in real time.
+- The ``curl`` command requests the ``urn:ngsi-ld:robot:1`` entity from the context broker.
+- The ``-H 'Accept: application/json'`` header asks for a plain JSON response.
+- The ``jq`` tool extracts the ``data`` field of the ``chatter`` value.
+- The ``sleep 1`` command waits one second between queries, so you can see the value change.
 
-By running this loop, you can continuously monitor the data being published from the ROS 2 environment and stored in the Context Broker.
-This provides a simple yet effective way to validate the integration and observe the flow of data between ROS 2 and FIWARE.
+You should see the "Hello World: [count]" messages published by the ``talker`` node.
 
 Injecting Data into the Context Broker via REST API
 ---------------------------------------------------
 
-In this section, we will demonstrate how to inject data into the FIWARE Context Broker using its REST API and retrieve this data in a ROS 2 subscriber.
-This process showcases the bidirectional communication between the FIWARE Context Broker and ROS 2, enabling seamless data exchange between the two systems.
+In this section, we write data into the context broker with its REST API and receive it in a ROS 2 subscriber.
 
-Before proceeding, ensure that you stop the previous ``curl`` command and the ``talker`` node.
-You can do this by pressing ``Ctrl+C`` in the respective terminal windows where they are running.
+Before proceeding, stop the previous ``curl`` loop and the ``talker`` node.
+You can do this by pressing ``Ctrl+C`` in each terminal.
 
-To inject data into the FIWARE Context Broker, you can use the ``curl`` command to send a ``POST`` or ``PATCH`` request. This allows you to create or update entities and their attributes in the Context Broker.
-
-For example, to update the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity, you can use the following command:
+To update the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity, use the following command:
 
 .. code-block:: bash
 
-    payload='{"value":{"data":"Hello World from Context Broker"}}'
+    payload='{"type":"Property","value":{"data":"Hello World from Context Broker"}}'
 
     curl http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1/attrs/chatter -X PATCH -d "$payload" -H 'Content-Type: application/json'
 
 In this example:
 
 - The ``-X PATCH`` option specifies that the request is a partial update.
-- The URL points to the ``attrs`` endpoint of the ``urn:ngsi-ld:robot:1`` entity.
-- The ``-d`` option provides the JSON payload, which updates the ``chatter`` attribute with a new value.
+- The URL points to the ``chatter`` attribute of the ``urn:ngsi-ld:robot:1`` entity.
+- The ``-d`` option provides the JSON payload with the new value.
 - The ``-H 'Content-Type: application/json'`` header indicates that the request body is in JSON format.
 
-After running this command, the updated value will be available in the ROS 2 environment if the appropriate mapping is configured in the `context_broker_config.json` file.
+coraine publishes the value on the DDS Topic **before** it stores it.
+If the value does not fit the topic's message type (``std_msgs/msg/String`` here), coraine answers ``400 Bad Request`` and stores nothing.
+This way, the entity always matches what is actually on the ROS 2 network.
 
 Receiving Data in a ROS 2 Subscription Node
 -------------------------------------------
 
-To retrieve the data injected into the FIWARE Context Broker and published back into the ROS 2 environment, you can use the `listener` node provided by the `demo_nodes_cpp` package. This node subscribes to the ``rt/chatter`` topic and displays the messages it receives.
+To receive the data written to the context broker, use the ``listener`` node provided by the ``demo_nodes_cpp`` package.
+This node subscribes to the ``/chatter`` topic and prints the messages it receives.
 
-To run the `listener` node you can use the same Vulcanexus container used earlier for the `talker` node.
-To start the `listener` node, execute the following command in the Vulcanexus container:
+Run the ``listener`` node in the same Vulcanexus container used earlier for the ``talker`` node:
 
 .. code-block:: bash
 
   ros2 run demo_nodes_cpp listener
 
-The `listener` node will begin subscribing to the ``rt/chatter`` topic and display the messages it receives in real time.
-These messages include the data injected into the FIWARE Context Broker and published back into the ROS 2 environment.
+Now run the ``PATCH`` command from the previous section again.
+The ``listener`` prints the message written to the context broker:
 
-Now, run the command from previous section to observe the data being published from the FIWARE Context Broker.
+.. code-block:: text
+
+    [INFO] [listener]: I heard: [Hello World from Context Broker]
 
 Conclusion
 ----------
 
-In this tutorial, we demonstrated how to establish seamless communication between ROS 2 and the FIWARE Context Broker using Docker containers. By following the steps outlined, you were able to:
+In this tutorial, we connected ROS 2 and the coraine context broker using Docker containers. You were able to:
 
-- Publish data from ROS 2 to the FIWARE Context Broker.
-- Inject data into the FIWARE Context Broker and observe it being published back into the ROS 2 environment.
+- Publish data from ROS 2 to the context broker.
+- Write data to the context broker and receive it in ROS 2.
 
-This bidirectional communication enables powerful integrations between robotics systems and smart city platforms, allowing for real-time data exchange and enhanced interoperability. The use of Docker ensures a portable and reproducible setup, making it easier to deploy and scale the solution.
+This two-way link lets robots share their state with other systems, such as dashboards, digital twins or data spaces, through the standard NGSI-LD API.
 
-Feel free to expand on this setup by adding more DDS Topics and NGSI-LD entities to the configuration file, or by integrating additional ROS 2 nodes and FIWARE components to suit your specific use case.
+You can extend this setup by adding more DDS Topics and NGSI-LD entities to the configuration file.
+To go further, see :ref:`ros2_fiware_services_app`, :ref:`ros2_fiware_actions_app` and :ref:`coraine_how_to`.

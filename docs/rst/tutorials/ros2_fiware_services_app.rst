@@ -1,44 +1,43 @@
 .. _ros2_fiware_services_app:
 
-Calling ROS 2 Services from FIWARE Context Broker
-=================================================
+Calling ROS 2 Services from the coraine Context Broker
+======================================================
 
 Introduction
 ------------
 
-This tutorial demonstrates how to call a ROS 2 service from the FIWARE Context Broker using Docker containers.
-In this example, Orion-LD acts as a client for a ROS 2 service, while a ROS 2 service server provides the
+This tutorial shows how to call a ROS 2 service from the ARISE context broker, coraine, using Docker containers.
+In this example, coraine acts as a client of a ROS 2 service, and a ROS 2 service server provides the
 ``add_two_ints`` service.
 
 By the end of this tutorial, you will be able to:
 
-- Launch the FIWARE Context Broker with a DDS-to-NGSI-LD service mapping.
+- Launch the context broker with a DDS-to-NGSI-LD service mapping.
 - Start a ROS 2 service server that adds two integers.
-- Trigger a ROS 2 service call from the Context Broker through the NGSI-LD REST API.
-- Retrieve the service response from the Context Broker.
+- Call the ROS 2 service from the context broker through the NGSI-LD REST API.
+- Read the service response from the context broker.
 
-We will use Docker Compose to run Orion-LD and MongoDB, and a Vulcanexus Docker container to run the ROS 2
+We will use Docker Compose to run coraine, and a Vulcanexus Docker container to run the ROS 2
 service server.
 
 .. note::
 
-    This tutorial replicates the approach of the :ref:`ros2_fiware_basic_app` tutorial, it is recommended to
-    review that tutorial first.
+    This tutorial follows the same approach as :ref:`ros2_fiware_basic_app`. We recommend that you complete that tutorial first.
 
 Prerequisites
 -------------
 
-- Docker installed on your system.
-- Docker Compose installed on your system.
+- Docker installed on your system (Linux, ``amd64``).
+- Docker Compose v2 installed on your system.
+- ``curl`` and ``jq`` installed on your host.
 
-Running the FIWARE Context Broker
----------------------------------
+Running the Context Broker
+--------------------------
 
-The Context Broker requires a configuration file to establish a mapping between ROS 2 services and NGSI-LD
-entity attributes.
+The context broker needs a configuration file that maps ROS 2 services to NGSI-LD entity attributes.
 
 In this tutorial, the ``add_two_ints`` ROS 2 service is mapped to the ``add_two_ints`` attribute of the
-``urn:ngsi-ld:robot:1`` NGSI-LD entity. Orion-LD will use this mapping to act as a client of the ROS 2
+``urn:ngsi-ld:robot:1`` NGSI-LD entity. coraine uses this mapping to act as a client of the ROS 2
 service.
 
 Create a file named ``context_broker_srv_config.json`` with the following content:
@@ -58,7 +57,9 @@ Create a file named ``context_broker_srv_config.json`` with the following conten
             "add_two_ints": {
               "entityType": "Robot",
               "entityId": "urn:ngsi-ld:robot:1",
-              "attribute": "add_two_ints"
+              "attribute": "add_two_ints",
+              "requestType": "example_interfaces::srv::dds_::AddTwoInts_Request_",
+              "replyType": "example_interfaces::srv::dds_::AddTwoInts_Response_"
             }
           }
         }
@@ -67,62 +68,59 @@ Create a file named ``context_broker_srv_config.json`` with the following conten
 
 Here's a breakdown of the configuration file structure:
 
-- ``dds``: This section contains the configuration for the DDS transport layer.
+- ``ddsmodule``: This section contains the configuration for the DDS transport layer.
 
-  - ``domain``: The DDS domain ID used by both Orion-LD and the ROS 2 service server.
+  - ``domain``: The DDS domain ID used by both coraine and the ROS 2 service server.
   - ``transport``: The DDS transport used for communication. In this tutorial, UDP is used.
 
 - ``ngsild``: This section defines the mapping between ROS 2 services and NGSI-LD entities.
 
-  - ``services``: This section contains the ROS 2 services exposed through Orion-LD.
-  - ``add_two_ints``: The name of the ROS 2 service that Orion-LD will call.
+  - ``services``: This section contains the ROS 2 services that coraine can call.
+  - ``add_two_ints``: The name of the ROS 2 service.
   - ``entityType``: The type of the NGSI-LD entity associated with the service.
   - ``entityId``: The unique identifier of the NGSI-LD entity associated with the service.
   - ``attribute``: The NGSI-LD attribute used to represent the service request and response.
+  - ``requestType`` and ``replyType``: The DDS type names of the service request and reply.
+    ``ros2 service type /add_two_ints`` shows the ROS 2 type, ``example_interfaces/srv/AddTwoInts``. On DDS it becomes the names above.
 
-This configuration ensures that requests written to the ``add_two_ints`` attribute of the
-``urn:ngsi-ld:robot:1`` entity are translated into ROS 2 service calls to ``/add_two_ints``.
+With this configuration, a request written to the ``add_two_ints`` attribute of the
+``urn:ngsi-ld:robot:1`` entity becomes a call to the ``/add_two_ints`` ROS 2 service.
 
-To run the FIWARE Context Broker, create a ``docker-compose-srv.yml`` file with the following content:
+To run the context broker, create a ``docker-compose-srv.yml`` file with the following content:
 
 .. code-block:: yaml
 
     services:
 
-      mongodb:
-        image: mongo:7.0
-        privileged: true
-        ipc: host
+      coraine:
+        image: quay.io/seamware/coraine:0.7.0
         network_mode: host
-        command: --bind_ip_all
-        volumes:
-          - mongo_data:/data/db
-
-      orion:
-        image: fiware/orion-ld:1.13.0-PRE-1835
-        privileged: true
         ipc: host
-        network_mode: host
-        depends_on:
-          - mongodb
-        restart: always
-        command: -dbhost localhost -wip dds -mongocOnly
-        environment:
-          - ORIONLD_MONGO_HOST=localhost
+        restart: unless-stopped
+        command:
+          - --database
+          - corDB
+          - --dbDir
+          - /data
+          - --apiPlugins
+          - admin
+          - --bridges
+          - dds
+          - --bridgeConfig
+          - /opt/seamware/etc/dds.json
         volumes:
-          - ./context_broker_srv_config.json:/root/.orionld
-        healthcheck:
-          test: curl --fail -s http://localhost:1026/version || exit 1
-          interval: 30s
-          retries: 15
+          - ./context_broker_srv_config.json:/opt/seamware/etc/dds.json:ro
+          - coraine_data:/data
+          - dds_types:/opt/seamware/etc/dds-types
 
     volumes:
-      mongo_data:
+      coraine_data:
+      dds_types:
 
-This configuration starts MongoDB and FIWARE Context Broker. MongoDB is used by Orion-LD to store the current state of
-the Context Broker.
+This configuration starts coraine with its built-in database (``corDB``) and the DDS bridge.
+No external database is needed.
 
-Start the services with the following command:
+Start the broker with the following command:
 
 .. code-block:: bash
 
@@ -130,24 +128,11 @@ Start the services with the following command:
 
 .. note::
 
-    This tutorial uses Docker Compose v2, which is integrated with the Docker CLI and uses the
-    ``docker compose`` command.
-
-    If that command does not work in your environment, try the older command instead:
+    If something goes wrong during the setup, check the broker logs:
 
     .. code-block:: bash
 
-        docker-compose -f docker-compose-srv.yml up -d
-
-This command downloads the required images and starts the containers in detached mode.
-
-.. note::
-
-    If something goes wrong during the setup, run the previous command without detached mode to inspect the logs:
-
-    .. code-block:: bash
-
-        docker compose -f docker-compose-srv.yml up
+        docker compose -f docker-compose-srv.yml logs -f coraine
 
 .. note::
 
@@ -172,11 +157,10 @@ Create and run a new container with the following command:
 
 .. code-block:: bash
 
-    docker run -it --rm --net=host --ipc=host --privileged \
-      -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+    docker run -it --rm --net=host --ipc=host \
       eprosima/vulcanexus:jazzy-desktop
 
-This command will run the Vulcanexus container and connect it to the host network, allowing it to communicate with the FIWARE Context Broker.
+This command runs the Vulcanexus container on the host network and the host IPC namespace, so it can reach the context broker.
 
 Inside the Vulcanexus container, run the ``add_two_ints`` service server provided by the
 ``demo_nodes_cpp`` package:
@@ -196,7 +180,7 @@ You can verify that the service is available from another terminal inside the sa
 
 You should see the following service in the output:
 
-.. code-block:: bash
+.. code-block:: text
 
     /add_two_ints
 
@@ -208,37 +192,36 @@ You can also inspect the service type with:
 
 The expected type is:
 
-.. code-block:: bash
+.. code-block:: text
 
     example_interfaces/srv/AddTwoInts
 
 Calling the ROS 2 Service from the Context Broker
 -------------------------------------------------
 
-At this stage, Orion-LD is running with a service mapping and the ROS 2 service server is waiting for
+At this stage, coraine is running with a service mapping and the ROS 2 service server is waiting for
 requests.
 
-To call the service, update the ``add_two_ints`` attribute of the ``urn:ngsi-ld:robot:1`` entity through
-the NGSI-LD REST API.
-
-To do so, send a request to the ROS 2 service by patching the ``add_two_ints`` attribute with the two integers to
-add:
+To call the service, update the ``add_two_ints`` attribute of the ``urn:ngsi-ld:robot:1`` entity
+with the two integers to add:
 
 .. code-block:: bash
 
-    payload='{"value":{"a":10,"b":32}}'
+    payload='{"type":"Property","value":{"a":10,"b":32}}'
 
-    curl http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1/attrs/add_two_ints \
+    curl -s "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1/attrs/add_two_ints?ddsSync=true" \
       -X PATCH \
       -d "$payload" \
-      -H 'Content-Type: application/json'
+      -H 'Content-Type: application/json' \
+      -w '%{http_code}\n'
 
 In this example:
 
 - ``a`` is set to ``10``.
 - ``b`` is set to ``32``.
-- Orion-LD uses the configured ``services`` mapping to call the ``/add_two_ints`` ROS 2 service.
+- coraine uses the configured ``services`` mapping to call the ``/add_two_ints`` ROS 2 service.
 - The ROS 2 service server receives the request and computes the sum.
+- ``?ddsSync=true`` makes the request wait briefly for the reply (200 ms by default). If the reply arrives in time, the request returns ``204`` and the reply is already in the entity.
 
 The service server terminal should show that it received a request similar to:
 
@@ -247,67 +230,74 @@ The service server terminal should show that it received a request similar to:
     Incoming request
     a: 10 b: 32
 
+.. note::
+
+    Without ``?ddsSync=true``, or when the service is slower than the wait, coraine answers ``202 Accepted`` right away.
+    The reply is written to the entity as soon as it arrives. A slow robot never blocks the broker.
+
+    If no server provides the service, coraine answers ``503 Service Unavailable`` and stores nothing.
+
 Querying the Service Response
 -----------------------------
 
-After the service call has been processed, query the NGSI-LD entity to inspect the current value of the
-``add_two_ints`` attribute:
+Query the NGSI-LD entity to inspect the ``add_two_ints`` attribute:
 
 .. code-block:: bash
 
-    curl "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?prettyPrint=yes&local=true" \
+    curl "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?local=true" \
       -s -S \
       -H 'Accept: application/json' | jq
 
-The response should contain the ``add_two_ints`` attribute.
-The attribute contains several fields:
+The response contains the ``add_two_ints`` attribute. Its ``value`` is the request you sent.
+Two sub-properties sit next to it, ``request`` and ``reply``:
 
-.. code-block:: text
+.. code-block:: json
 
     {
       "id": "urn:ngsi-ld:robot:1",
       "type": "Robot",
-
       "add_two_ints": {
         "type": "Property",
-        "value": {
-          "a": 10,
-          "b": 32
+        "value": { "a": 10, "b": 32 },
+        "request": {
+          "type": "Property",
+          "value": { "a": 10, "b": 32 },
+          "ddsDataType": {
+            "type": "Property",
+            "value": "example_interfaces::srv::dds_::AddTwoInts_Request_"
+          },
+          "requestId": { "type": "Property", "value": 1 },
+          "publishedAt": { "type": "Property", "value": 1763900000 },
+          "observedAt": "2026-11-23T10:00:00.000Z"
         },
-        "request": {...},
-        "reply": {...}
-      },
-      "ddsType": {
-        "type": "Property",
-        "value": "fastdds"
+        "reply": {
+          "type": "Property",
+          "value": { "sum": 42 },
+          "ddsDataType": {
+            "type": "Property",
+            "value": "example_interfaces::srv::dds_::AddTwoInts_Response_"
+          },
+          "requestId": { "type": "Property", "value": 1 },
+          "participantId": { "type": "Property", "value": "..." },
+          "instanceHandleId": { "type": "Property", "value": "..." },
+          "publishedAt": { "type": "Property", "value": 1763900000 },
+          "observedAt": "2026-11-23T10:00:00.010Z"
+        }
       }
     }
 
-The ``value`` field contains the service request with the two integers to add.
-The ``request`` and ``reply`` sub-attributes contain several metadata fields related to the DDS entities.
-We are interested in the value field of the ``reply`` attribute, which contains the service response with the computed sum.
-
-For this example, the expected service result is:
-
-.. code-block:: text
-
-    "reply": {
-      "type": "Property",
-      "value": {
-        "sum": 42
-      },
-
-
-You can continuously monitor the entity while sending service requests with:
+The ``value`` of ``reply`` is the service response, with the computed sum. To print only the sum:
 
 .. code-block:: bash
 
-    while true; do
-        curl "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?prettyPrint=yes&local=true" \
-          -s -S \
-          -H 'Accept: application/json' | jq
-        sleep 1
-    done
+    curl -s "http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:robot:1?local=true" \
+      -H 'Accept: application/json' | jq '.add_two_ints.reply.value'
+
+.. code-block:: json
+
+    { "sum": 42 }
+
+The ``requestId`` of the reply matches the ``requestId`` of the request, so you can tell which request a reply answers.
 
 Troubleshooting
 ---------------
@@ -315,10 +305,9 @@ Troubleshooting
 If the service call does not reach the ROS 2 service server, check the following points:
 
 - Make sure the ``add_two_ints`` service server is running.
-- Make sure Orion-LD and the ROS 2 container are using the same DDS domain.
-- Make sure both containers are using ``--net=host`` or ``network_mode: host``.
+- Make sure coraine and the ROS 2 container are using the same DDS domain (``domain`` in the configuration file and ``ROS_DOMAIN_ID`` in ROS 2).
+- Make sure both containers use the host network and the host IPC namespace (``--net=host --ipc=host``, or ``network_mode: host`` and ``ipc: host``).
 - Make sure the service name in the configuration file is ``add_two_ints``.
-
 - Check that ROS 2 can see the service with:
 
   .. code-block:: bash
@@ -326,19 +315,26 @@ If the service call does not reach the ROS 2 service server, check the following
       ros2 service list
       ros2 service type /add_two_ints
 
+- Check what the broker sees on the ROS 2 network:
+
+  .. code-block:: bash
+
+      curl -s http://localhost:1026/admin/bridges/dds/inventory | jq '.services[].name'
+
 Conclusion
 ----------
 
-In this tutorial, we demonstrated how to call a ROS 2 service from the FIWARE Context Broker.
-Orion-LD was configured as a ROS 2 service client through a DDS-to-NGSI-LD service mapping, and a ROS 2
+In this tutorial, we called a ROS 2 service from the coraine context broker.
+coraine was configured as a ROS 2 service client through a DDS-to-NGSI-LD service mapping, and a ROS 2
 ``add_two_ints`` service server was launched in a Vulcanexus container.
 
 By following these steps, you were able to:
 
-- Configure Orion-LD with an NGSI-LD mapping for a ROS 2 service.
+- Configure coraine with an NGSI-LD mapping for a ROS 2 service.
 - Launch a ROS 2 service server.
 - Send service requests through the NGSI-LD REST API.
-- Observe the service result through the Context Broker.
+- Read the service result from the context broker.
 
 You can extend this example by adding more ROS 2 services to the ``services`` section of the
 ``context_broker_srv_config.json`` file and mapping each one to a different NGSI-LD entity attribute.
+The next tutorial, :ref:`ros2_fiware_actions_app`, covers long-running tasks.

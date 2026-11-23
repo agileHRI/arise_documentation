@@ -84,7 +84,7 @@ Use in ARISE
 
 Vulcanexus is central to the ARISE architecture and acts as the default middleware stack across several core components:
 
-- **NGSI-LD Context Broker**: Vulcanexus provides the underlying Fast DDS runtime used to bind ROS 2 topics to NGSI-LD entities. The ARISE Broker natively supports this integration, enabling seamless OT/IT data flows.
+- **NGSI-LD Context Broker**: Vulcanexus provides the underlying Fast DDS runtime used to bind ROS 2 topics to NGSI-LD entities. The ARISE context broker, :ref:`coraine <coraine_how_to>`, supports this integration natively through its DDS bridge, enabling OT/IT data flows.
 - **ROS4HRI Module Execution**: All open-source HRI components developed within ARISE are deployed over Vulcanexus, ensuring compatibility, observability, and extensibility.
 - **TEFs and FSTP Pilots**: Testing and experimentation facilities (TEFs) and third-party projects (FSTPs) rely on Vulcanexus as a consistent middleware base, guaranteeing that applications can be deployed and tested under uniform communication and runtime conditions.
 
@@ -96,7 +96,7 @@ One of Vulcanexus's standout capabilities in ARISE is its interoperability with 
 The DDS Enabler
 ^^^^^^^^^^^^^^^
 
-The DDS Enabler is an open-source library and runtime developed by eProsima and the FIWARE Foundation. It has been integrated into the Orion-LD Context Broker to:
+The DDS Enabler is an open-source library and runtime developed by eProsima and the FIWARE Foundation. coraine's DDS bridge is built on it to:
 
 - Listen to DDS topics (used in ROS 2 systems)
 - Translate data into NGSI-LD entities
@@ -139,5 +139,5 @@ For more information, resources, and support regarding Vulcanexus, you can explo
 - Fast DDS: https://github.com/eProsima/Fast-DDS
 - Docker Images: https://hub.docker.com/r/eprosima/vulcanexus
 - DDS Enabler: https://github.com/eProsima/FIWARE-DDS-Enabler
-- Orion-LD: https://github.com/FIWARE/context.Orion-LD
+- coraine: https://github.com/SEAMWARE/coraine
 - ARISE Portal: https://arise-middleware.eu

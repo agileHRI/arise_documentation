@@ -19,7 +19,11 @@ ARISE uses FIWARE to support convergence between these worlds.
 NGSI-LD Context Broker
 ----------------------
 
-The NGSI-LD Context Broker is the central FIWARE component used in ARISE. It manages context information as NGSI-LD entities.
+The NGSI-LD Context Broker is the central component of this layer. It manages context information as NGSI-LD entities.
+
+In ARISE, the context broker is `coraine <https://github.com/SEAMWARE/coraine>`__, an NGSI-LD context broker developed by SEAMWARE.
+coraine maps ROS 2 topics, services and actions to NGSI-LD entities through its DDS bridge, and keeps the history of every change (TRoE).
+See :ref:`coraine_how_to` to get started.
 
 An entity represents something relevant in the system, for example:
 
@@ -66,7 +70,7 @@ A simplified view is:
 
 This allows ROS 2 modules to remain ROS 2-compliant while becoming visible to systems that interact through HTTP APIs and semantic data models.
 
-For example, a robot can publish its state through ROS 2. The FIWARE Context Broker can expose that state as an NGSI-LD ``Robot`` entity. A dashboard, AI service, MES, or digital twin can then query or subscribe to that entity without joining the ROS 2 graph directly.
+For example, a robot can publish its state through ROS 2. The context broker can expose that state as an NGSI-LD ``Robot`` entity. A dashboard, AI service, MES, or digital twin can then query or subscribe to that entity without joining the ROS 2 graph directly.
 
 
 Data Models
@@ -199,7 +203,8 @@ Resources
 
 * `FIWARE Catalogue <https://www.fiware.org/catalogue/>`_
 * `NGSI-LD <https://ngsi-ld.org/>`_
-* `FIWARE Orion-LD Context Broker <https://github.com/FIWARE/context.Orion-LD>`_
+* `coraine context broker <https://github.com/SEAMWARE/coraine>`_
 * `ROS 2 on DDS <https://design.ros2.org/articles/ros_on_dds.html>`_
 * `Vulcanexus Documentation <https://docs.vulcanexus.org/>`_
-* `ROS 2 and FIWARE basic app <https://github.com/agileHRI/arise_documentation/blob/main/docs/rst/getting_started/ros2_fiware_basic_app.rst>`_
+* :ref:`ros2_fiware_basic_app`
+* :ref:`coraine_how_to`
