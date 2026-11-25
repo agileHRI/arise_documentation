@@ -12,6 +12,7 @@ For step-by-step examples, see the tutorials:
 - :ref:`ros2_fiware_basic_app`: ROS 2 topics.
 - :ref:`ros2_fiware_services_app`: ROS 2 services.
 - :ref:`ros2_fiware_actions_app`: ROS 2 actions and their history.
+- :ref:`dds_ngsild_mapper_tutorial`: generate the mapping file instead of writing it by hand.
 
 Why coraine in ARISE
 --------------------
@@ -184,6 +185,7 @@ It also gives each one's type, with a sample message:
     curl -s localhost:1026/admin/bridges/dds/inventory | jq '{topics: [.topics[].name], services: [.services[].name], actions: [.actions[].name]}'
 
 Use the inventory to write your mapping file: it gives you the exact DDS type names that ``requestType``, ``replyType`` and ``type`` need.
+To generate the mapping for many topics at once, use the DDS NGSI-LD Mapper (see :ref:`dds_ngsild_mapper_tutorial`).
 
 Choose where data is stored
 ---------------------------
