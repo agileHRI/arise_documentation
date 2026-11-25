@@ -15,3 +15,4 @@ By following these tutorials, you will gain practical insights and a deeper unde
 
    ros2_fiware_services_app
    ros2_fiware_actions_app
+   dds_ngsild_mapper
